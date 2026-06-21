@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EHIR — Exam Dossier · CT080-3-2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ECEFF3; --paper:#FFFFFF; --ink:#13171D; --ink-soft:#39424E; --muted:#6C7682;
+  --line:#D6DCE3; --line-soft:#E6EAEF;
+  --target:#D8281B; --target-soft:#FBE9E7; --target-ink:#8E1610;
+  --intel:#0C7C84; --intel-soft:#E3F2F1; --intel-ink:#0A5B61;
+  --trap:#B0560A; --trap-soft:#FBEEDB; --trap-ink:#7C3D06;
+  --display:'Space Grotesk',system-ui,sans-serif;
+  --body:'IBM Plex Sans',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --maxw:1180px;
+  --shadow:0 1px 2px rgba(20,24,30,.05),0 8px 24px -16px rgba(20,24,30,.25);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{
+  margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);
+  font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased;
+}
+a{color:var(--intel-ink)}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+
+/* ---------- top bar ---------- */
+header.top{
+  position:sticky;top:0;z-index:50;background:rgba(236,239,243,.86);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
+}
+.top .wrap{display:flex;align-items:center;gap:16px;height:60px}
+.brand{display:flex;align-items:center;gap:11px;font-family:var(--mono);font-weight:600;
+  font-size:14px;letter-spacing:.02em;color:var(--ink);text-decoration:none;white-space:nowrap}
+.brand .reticle{width:22px;height:22px;flex:none}
+.brand small{color:var(--muted);font-weight:400}
+.top nav{margin-left:auto;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.top nav::-webkit-scrollbar{display:none}
+.top nav a{font-family:var(--mono);font-size:12.5px;color:var(--ink-soft);text-decoration:none;
+  padding:6px 9px;border-radius:7px;white-space:nowrap}
+.top nav a:hover{background:var(--line-soft);color:var(--ink)}
+.scopebtn{font-family:var(--mono);font-size:12px;font-weight:600;border:1px solid var(--line);
+  background:var(--paper);color:var(--ink-soft);padding:7px 12px;border-radius:8px;cursor:pointer;white-space:nowrap}
+.scopebtn:hover{border-color:var(--target);color:var(--target-ink)}
+body.focus .scopebtn{background:var(--target);border-color:var(--target);color:#fff}
+
+/* ---------- reticle ---------- */
+.reticle{display:inline-block;vertical-align:middle}
+.reticle circle,.reticle line{stroke:var(--target);stroke-width:2;fill:none}
+.reticle .dot{fill:var(--target);stroke:none}
+
+/* ---------- hero ---------- */
+.hero{padding:54px 0 30px}
+.klabel{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--target);margin:0 0 14px}
+.hero h1{font-family:var(--display);font-weight:700;font-size:clamp(34px,6vw,62px);
+  line-height:1.02;letter-spacing:-.02em;margin:0 0 14px}
+.hero h1 em{font-style:normal;color:var(--target)}
+.hero .lede{font-size:clamp(17px,2.4vw,20px);color:var(--ink-soft);max-width:62ch;margin:0 0 26px}
+.hero .lede b{color:var(--ink);font-weight:600}
+
+.struct{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:26px 0 8px}
+.struct .box{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow)}
+.struct .box h3{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 8px;font-weight:600}
+.struct .box p{margin:0;font-size:15px;color:var(--ink-soft)}
+.struct .box .big{font-family:var(--display);font-weight:700;font-size:30px;color:var(--ink);line-height:1}
+.struct .box.acc{background:var(--target);border-color:var(--target);color:#fff}
+.struct .box.acc h3{color:rgba(255,255,255,.78)}
+.struct .box.acc p,.struct .box.acc .big{color:#fff}
+
+/* legend */
+.legend{display:flex;flex-wrap:wrap;gap:10px 18px;margin:30px 0 6px;padding:16px 18px;
+  background:var(--paper);border:1px solid var(--line);border-radius:12px}
+.legend .li{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--ink-soft)}
+.swatch{width:14px;height:14px;border-radius:4px;flex:none}
+.legend b{color:var(--ink)}
+
+/* ---------- attack chain ---------- */
+.chain-sec{padding:14px 0 8px}
+.chain{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:8px}
+.node{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px 12px;position:relative;box-shadow:var(--shadow)}
+.node .n{font-family:var(--mono);font-size:11px;color:var(--target);font-weight:600}
+.node h4{font-family:var(--display);font-weight:600;font-size:15px;margin:4px 0 5px;line-height:1.12}
+.node p{margin:0;font-size:12.5px;color:var(--muted);line-height:1.4}
+.node:not(:last-child)::after{content:"›";position:absolute;right:-10px;top:50%;transform:translateY(-50%);
+  font-family:var(--mono);font-size:20px;color:var(--line);z-index:2}
+@media (max-width:860px){.chain{grid-template-columns:repeat(2,1fr)}.node::after{display:none!important}}
+
+/* ---------- section scaffold ---------- */
+section.mod{padding:46px 0 8px;scroll-margin-top:74px}
+.modhead{display:flex;align-items:flex-end;gap:14px;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:26px}
+.modhead .idx{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--target);
+  border:1px solid var(--target);border-radius:7px;padding:4px 8px;white-space:nowrap}
+.modhead h2{font-family:var(--display);font-weight:700;font-size:clamp(24px,3.6vw,34px);
+  letter-spacing:-.01em;margin:0;line-height:1.05}
+.modhead .sub{font-family:var(--mono);font-size:12px;color:var(--muted);margin-left:auto;text-align:right;white-space:nowrap}
+@media (max-width:680px){.modhead{flex-wrap:wrap}.modhead .sub{margin-left:0;width:100%;text-align:left}}
+
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) 332px;gap:30px;align-items:start}
+@media (max-width:920px){.grid2{grid-template-columns:1fr;gap:20px}}
+
+/* main content blocks */
+.block{margin:0 0 22px}
+.block:last-child{margin-bottom:0}
+h3.t{font-family:var(--display);font-weight:600;font-size:19px;margin:0 0 10px;display:flex;align-items:center;gap:9px}
+h3.t .r{width:17px;height:17px;flex:none}
+h4.s{font-family:var(--mono);font-size:12.5px;letter-spacing:.04em;text-transform:uppercase;
+  color:var(--target-ink);margin:18px 0 8px;font-weight:600}
+p{margin:0 0 12px}
+.block ul{margin:0 0 12px;padding-left:20px}
+.block li{margin:0 0 7px}
+.block li b,p b{font-weight:600}
+.tag{display:inline-block;font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.04em;
+  padding:2px 7px;border-radius:20px;vertical-align:middle;transform:translateY(-1px)}
+.tag.exam{background:var(--target-soft);color:var(--target-ink)}
+.tag.essay{background:#EAE4F6;color:#5B3FA0}
+.tag.trap{background:var(--trap-soft);color:var(--trap-ink)}
+code,.kbd{font-family:var(--mono);font-size:.88em;background:var(--line-soft);
+  padding:.1em .4em;border-radius:5px;color:var(--ink);white-space:nowrap}
+.cmd{font-family:var(--mono);font-size:13px;background:#13171D;color:#E8EDF2;border-radius:10px;
+  padding:12px 14px;margin:0 0 12px;overflow-x:auto;line-height:1.6}
+.cmd .c{color:#7FB7BD}
+.cmd .o{color:#E8C07D}
+
+/* definition pair */
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 14px}
+.pair .p{border:1px solid var(--line);border-radius:11px;padding:13px 15px;background:var(--paper)}
+.pair .p h5{font-family:var(--mono);font-size:12px;letter-spacing:.03em;margin:0 0 6px;font-weight:600;text-transform:uppercase}
+.pair .p p{font-size:13.5px;color:var(--ink-soft);margin:0}
+.pair .p.a h5{color:var(--target-ink)} .pair .p.b h5{color:var(--intel-ink)}
+@media (max-width:520px){.pair{grid-template-columns:1fr}}
+
+/* ---------- intel rail ---------- */
+aside.rail{position:sticky;top:74px}
+@media (max-width:920px){aside.rail{position:static}}
+.intel{background:var(--intel-soft);border:1px solid #BFE0DE;border-radius:14px;padding:16px 17px;margin:0 0 16px}
+.intel .h{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--intel-ink);margin:0 0 9px}
+.intel .h .d{width:7px;height:7px;border-radius:50%;background:var(--intel)}
+.intel h4{font-family:var(--display);font-weight:600;font-size:15.5px;margin:0 0 7px;color:var(--ink)}
+.intel p{font-size:13.5px;color:var(--ink-soft);margin:0 0 9px}
+.intel p:last-child{margin-bottom:0}
+.intel ul{margin:0;padding-left:18px}
+.intel li{font-size:13px;color:var(--ink-soft);margin:0 0 6px}
+.intel code{background:#fff;border:1px solid #CFE6E3}
+.funfact{background:#FFF;border-style:dashed;border-color:var(--intel)}
+.funfact .h{color:var(--intel-ink)}
+
+/* ---------- tables ---------- */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;font-size:13.5px;background:var(--paper);min-width:520px}
+th,td{text-align:left;padding:9px 13px;border-bottom:1px solid var(--line-soft)}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:#F6F8FA}
+td code{white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td.port{font-family:var(--mono);font-weight:600;color:var(--target-ink)}
+
+/* ---------- essays ---------- */
+.essaybar{background:var(--ink);color:#fff;border-radius:16px;padding:22px 24px;margin-bottom:18px}
+.essaybar .klabel{color:#FF6A5C;margin-bottom:8px}
+.essaybar h2{font-family:var(--display);font-weight:700;font-size:clamp(22px,3.4vw,30px);margin:0 0 6px}
+.essaybar p{color:#C3CBD4;margin:0;font-size:15px}
+details.essay{background:var(--paper);border:1px solid var(--line);border-radius:14px;margin:0 0 12px;
+  box-shadow:var(--shadow);overflow:hidden}
+details.essay summary{list-style:none;cursor:pointer;padding:18px 20px;display:flex;gap:14px;align-items:flex-start}
+details.essay summary::-webkit-details-marker{display:none}
+.enum{font-family:var(--display);font-weight:700;font-size:26px;color:var(--target);line-height:1;flex:none;width:34px}
+.etitle{flex:1}
+.etitle h3{font-family:var(--display);font-weight:600;font-size:18px;margin:0 0 4px}
+.etitle .meta{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.chev{flex:none;color:var(--muted);font-family:var(--mono);transition:transform .2s}
+details[open] .chev{transform:rotate(90deg)}
+.ebody{padding:0 20px 20px;border-top:1px solid var(--line-soft)}
+.ebody h4.s{margin-top:16px}
+.ebody p,.ebody li{font-size:14.5px}
+
+/* ---------- traps / callout ---------- */
+.callbox{border:1px solid var(--trap);background:var(--trap-soft);border-radius:14px;padding:18px 20px;margin:0 0 16px}
+.callbox.big{margin:0 0 22px}
+.callbox h3{font-family:var(--display);font-weight:600;font-size:17px;margin:0 0 8px;color:var(--trap-ink);
+  display:flex;align-items:center;gap:8px}
+.callbox p,.callbox li{font-size:14px;color:var(--ink-soft)}
+.callbox ul{margin:0;padding-left:20px}
+.callbox li{margin-bottom:8px}
+.callbox b{color:var(--trap-ink)}
+
+/* bonus zone */
+.bonus-zone .modhead .idx{color:var(--intel-ink);border-color:var(--intel)}
+.bonus-zone .modhead h2 em{color:var(--intel-ink);font-style:normal;font-family:var(--mono);font-size:13px;
+  letter-spacing:.05em;text-transform:uppercase;vertical-align:middle;margin-left:8px}
+body.focus .intel,body.focus .bonus-zone{display:none}
+.focusnote{display:none;font-family:var(--mono);font-size:12.5px;color:var(--target-ink);
+  background:var(--target-soft);border:1px dashed var(--target);border-radius:10px;padding:10px 14px;margin:18px 0}
+body.focus .focusnote{display:block}
+
+/* gaps */
+.gapssec{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:26px 26px 10px;margin:30px 0;box-shadow:var(--shadow)}
+.gapssec h2{font-family:var(--display);font-weight:700;font-size:24px;margin:0 0 4px}
+.gapssec>p.intro{color:var(--ink-soft);margin:0 0 18px}
+.gapssec ul{padding-left:20px}
+.gapssec li{margin-bottom:9px;font-size:14.5px;color:var(--ink-soft)}
+.gapssec li b{color:var(--ink)}
+
+footer{padding:34px 0 60px;color:var(--muted);font-size:13px;font-family:var(--mono);text-align:center}
+footer a{color:var(--intel-ink)}
+
+.divider{height:1px;background:repeating-linear-gradient(90deg,var(--line) 0 8px,transparent 8px 16px);margin:6px 0}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute"><symbol id="ret" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><line x1="12" y1="1" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="1" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="23" y2="12"/><circle class="dot" cx="12" cy="12" r="1.6"/></symbol></svg>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top"><svg class="reticle" viewBox="0 0 24 24"><use href="#ret"/></svg>EHIR DOSSIER <small>· CT080-3-2</small></a>
+    <nav>
+      <a href="#chain">Lifecycle</a>
+      <a href="#m01">01</a><a href="#m02">02</a><a href="#m03">03</a>
+      <a href="#ref">Ports</a>
+      <a href="#m04">04</a><a href="#m05">05</a><a href="#m06">06</a>
+      <a href="#m07">07</a><a href="#m08">08</a>
+      <a href="#crypto">Crypto</a><a href="#stego">Stego</a>
+      <a href="#essays">Essays</a><a href="#traps">Traps</a><a href="#gaps">Gaps</a>
+    </nav>
+    <button class="scopebtn" id="scope">Exam targets only</button>
+  </div>
+</header>
+
+<main id="top">
+<div class="wrap">
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <p class="klabel">Final Exam · Revision Dossier</p>
+  <h1>Two parts. <em>Eight targets.</em><br>Four essays carry the marks.</h1>
+  <p class="lede">Everything your <b>exam prep flagged is marked as a target</b> (red). Everything that's in your slides but the prep <b>didn't</b> highlight sits in the <b>green Bonus Intel</b> rail beside it. Hit "Exam targets only" up top to strip the page down to just the prep-critical stuff for a focused cram.</p>
+
+  <div class="struct">
+    <div class="box acc"><h3>Section A</h3><span class="big">MCQ</span><p>Recall across the ~29 topics below. Ports, flags, definitions, "match the example to the type".</p></div>
+    <div class="box acc"><h3>Section B</h3><span class="big">4 Essays</span><p>Scenario-based. Heavy marks. Every answer must tie back to the given scenario.</p></div>
+    <div class="box"><h3>The 8 target areas</h3><p>Recon/Footprint/Enum · Protocols & Ports · Vuln Analysis · Social Eng & Kill Chain · PrivEsc/Persistence · Incident Response · Forensics & Evidence · Cyber Threat Intel</p></div>
+    <div class="box"><h3>Two prep warnings baked in</h3><p>IDS-evasion lives in <b>Module 03</b>, not Lab 4. And the IR life cycle has a <b>4-vs-6-phase</b> trap — both are covered below.</p></div>
+  </div>
+
+  <div class="legend">
+    <span class="li"><span class="swatch" style="background:var(--target)"></span><b>Target</b> — flagged in your exam prep</span>
+    <span class="li"><span class="swatch" style="background:var(--intel)"></span><b>Bonus Intel</b> — in slides, not in the prep</span>
+    <span class="li"><span class="swatch" style="background:var(--trap)"></span><b>Trap / Confirm</b> — easy to get wrong</span>
+    <span class="li"><span class="tag essay">ESSAY n</span> feeds a scenario essay</span>
+  </div>
+  <div class="focusnote">FOCUS MODE ON — Bonus Intel and the Crypto/Stego bonus zones are hidden. Toggle off to bring them back.</div>
+</section>
+
+<!-- ================= ATTACK CHAIN ================= -->
+<section class="chain-sec" id="chain">
+  <div class="modhead">
+    <span class="idx">SPINE</span>
+    <h2>The attack lifecycle</h2>
+    <span class="sub">backbone of Essay 1 · CEH 5 phases</span>
+  </div>
+  <p style="max-width:70ch;color:var(--ink-soft);margin-top:-8px">This chain is the skeleton the whole module hangs on. Modules 02→03→04→06 walk it left to right. Essay&nbsp;1 asks you to walk it for a scenario.</p>
+  <div class="chain">
+    <div class="node"><span class="n">01</span><h4>Reconnaissance</h4><p>Gather info on the target (passive + active). Modules 02.</p></div>
+    <div class="node"><span class="n">02</span><h4>Scanning</h4><p>Live hosts, open ports, services, OS. Module 03.</p></div>
+    <div class="node"><span class="n">03</span><h4>Enumeration</h4><p>Pull users, shares, versions via active queries. Module 04.</p></div>
+    <div class="node"><span class="n">04</span><h4>Gaining Access</h4><p>Crack passwords, exploit a service/vuln. Module 06.</p></div>
+    <div class="node"><span class="n">05</span><h4>Maintaining Access</h4><p>Backdoor, rootkit, PrivEsc — stay in. Module 06.</p></div>
+    <div class="node"><span class="n">06</span><h4>Clearing Tracks</h4><p>Wipe logs, hide files, anti-forensics. Module 06.</p></div>
+  </div>
+</section>
+
+<!-- ================= MODULE 01 ================= -->
+<section class="mod" id="m01">
+  <div class="modhead"><span class="idx">MOD 01</span><h2>Intro, Kill Chain &amp; Threat Intel</h2><span class="sub">CIA · Kill Chain · CTI · TTPs</span></div>
+  <div class="grid2">
+    <div>
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>Cyber Threat Intelligence — the 4 types <span class="tag exam">EXAM ★</span></h3>
+        <p>Your prep calls this out hard: <b>know all four and be able to match an example to its type.</b> The trick is to anchor on <b>who consumes it</b>.</p>
+        <div class="tablewrap"><table>
+          <tr><th>Type</th><th>Who it's for / purpose</th><th>Example</th></tr>
+          <tr><td><b>Strategic</b></td><td>Executives / board. High-level risk, long-term trends. Non-technical.</td><td>Report on ransomware trends hitting your industry; a nation-state targeting critical infrastructure.</td></tr>
+          <tr><td><b>Tactical</b></td><td>SOC / admins. Attacker <b>TTPs</b> → tune firewalls, IDS/IPS, SIEM rules.</td><td>A phishing campaign's traits: subject lines, malicious URLs, fake login pages.</td></tr>
+          <tr><td><b>Operational</b></td><td>Defenders / IR. Specific <b>incoming / imminent</b> attacks → rapid response.</td><td>Live alert of a DDoS hitting your servers; dark-web chatter that your staff creds are for sale.</td></tr>
+          <tr><td><b>Technical</b></td><td>Security tools + SOC. Raw <b>IoCs</b> to detect & block.</td><td>A malware sample hash on VirusTotal; a list of C2 IPs/domains for a botnet.</td></tr>
+        </table></div>
+        <p style="margin-top:10px"><span class="tag trap">TRAP</span> <b>Tactical vs Technical</b> both touch IoCs. Exam framing: <b>Technical = the raw indicators themselves</b> (hashes/IPs/domains); <b>Tactical = the behaviour/TTP patterns</b> built from them.</p>
+      </div>
+
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>Cyber Kill Chain — 7 stages <span class="tag exam">EXAM</span> <span class="tag essay">ESSAY 1</span></h3>
+        <p>Lockheed Martin model. The prep wants <b>attacker action + a defensive countermeasure at each stage</b>. (Countermeasures here are the standard set — see Gaps note.)</p>
+        <div class="tablewrap"><table>
+          <tr><th>Stage</th><th>Attacker does</th><th>Defender counters</th></tr>
+          <tr><td><b>1 Reconnaissance</b></td><td>Whois/DNS/social/job-post recon, scan for open ports</td><td>Minimise public info, web-log analytics, brand monitoring</td></tr>
+          <tr><td><b>2 Weaponization</b></td><td>Pair exploit + backdoor into a deliverable payload</td><td>Patch/harden, threat intel on tooling (hard to see directly)</td></tr>
+          <tr><td><b>3 Delivery</b></td><td>Send it: phishing email, malicious link, USB, watering hole</td><td>Email/URL filtering, awareness training, disable autorun</td></tr>
+          <tr><td><b>4 Exploitation</b></td><td>Payload triggers, exploits the vulnerability</td><td>Patching, EDR, DEP/ASLR, least privilege</td></tr>
+          <tr><td><b>5 Installation</b></td><td>Install backdoor/malware to persist; hide it</td><td>EDR/AV, app whitelisting, watch new services/run keys, FIM</td></tr>
+          <tr><td><b>6 Command &amp; Control</b></td><td>2-way channel (web/email/DNS), often encrypted; escalate</td><td>Segmentation, egress filtering, block known C2, DNS monitoring</td></tr>
+          <tr><td><b>7 Actions on Objectives</b></td><td>Exfiltrate / disrupt / destroy; pivot deeper</td><td>DLP, segmentation, watch big transfers, IR plan, backups</td></tr>
+        </table></div>
+      </div>
+
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>Defense in Depth <span class="tag exam">EXAM</span></h3>
+        <p>Layered controls so no single failure exposes everything; each layer slows and <b>contains lateral movement</b>. Standard layers: <b>policies / awareness → physical → perimeter (firewall) → internal network (segmentation, IDS/IPS) → host (hardening, AV, patch) → application → data (encryption, access control)</b>.</p>
+      </div>
+
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>TTPs &amp; the 5 hacking phases <span class="tag exam">EXAM</span></h3>
+        <p><b>TTPs</b> — <b>Tactics</b> = what the attacker wants to achieve; <b>Techniques</b> = how they achieve it; <b>Procedures</b> = the step-by-step execution.</p>
+        <p><b>5 phases of hacking:</b> Reconnaissance → Scanning → Gaining Access → Maintaining Access → Clearing Tracks. (Same spine as the lifecycle above.)</p>
+      </div>
+    </div>
+
+    <aside class="rail">
+      <div class="intel"><div class="h"><span class="d"></span>Bonus Intel · Foundations</div>
+        <h4>The CIA triad (+2)</h4>
+        <p><b>Confidentiality, Integrity, Availability</b> — plus <b>Authentication, Authorization, Non-repudiation</b> for the people side. Non-repudiation = sender can't deny sending.</p>
+      </div>
+      <div class="intel"><div class="h"><span class="d"></span>Bonus Intel · Hacker classes</div>
+        <h4>Who's attacking</h4>
+        <ul><li>White / Black / Grey hat</li><li>Script kiddie, hacktivist</li><li>State-sponsored, suicide hacker, cyber-terrorist</li></ul>
+        <p>Plus attack classes: <b>passive vs active</b>, and <b>inside vs outside</b>.</p>
+      </div>
+      <div class="intel"><div class="h"><span class="d"></span>Bonus Intel · Threat modeling</div>
+        <h4>5 steps</h4>
+        <p>Identify security objectives → app overview → decompose the app → identify threats → identify vulnerabilities.</p>
+      </div>
+      <div class="intel"><div class="h"><span class="d"></span>Bonus Intel · IH&amp;R 9-step</div>
+        <h4>EC-Council's detailed process</h4>
+        <p>Prep → Recording &amp; Assignment → Triage → Notification → Containment → Evidence Gathering &amp; Forensics → Eradication → Recovery → Post-Incident. <em>(This is the "9" in the 4-vs-6-vs-9 trap — see Module 07.)</em></p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ================= MODULE 02 ================= -->
+<section class="mod" id="m02">
+  <div class="modhead"><span class="idx">MOD 02</span><h2>Footprinting &amp; Reconnaissance</h2><span class="sub">passive vs active · DNS/AXFR · social eng</span></div>
+  <div class="grid2">
+    <div>
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>Passive vs Active footprinting <span class="tag exam">EXAM ★</span> <span class="tag essay">ESSAY 1</span></h3>
+        <p>Prep especially wants <b>passive recon</b>: gathering from public sources with <b>no contact</b> with the target.</p>
+        <div class="pair">
+          <div class="p a"><h5>Passive</h5><p>No direct interaction → stealthy. OSINT, search engines, social media, job posts, Whois, DNS records, public repos (GitHub/Pastebin), document metadata.</p></div>
+          <div class="p b"><h5>Active</h5><p>Directly touches the target → detectable. Port/network scanning, service fingerprinting, email harvesting by probing, website/dir enumeration.</p></div>
+        </div>
+        <p><b>Methodology order:</b> identify target → passive → active → network info → social engineering → website → DNS → compile &amp; report.</p>
+      </div>
+
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>DNS zone transfer / AXFR <span class="tag exam">EXAM ★</span></h3>
+        <p>A secondary DNS server normally requests a full copy of the zone from the primary using an <b>AXFR</b> request (for redundancy). If the primary is <b>misconfigured to allow anyone</b>, an attacker mimics a secondary and pulls the <b>entire zone file</b> — every hostname, IP and record in one shot.</p>
+        <p><b>What the attacker gains:</b> a full internal map — subdomains, mail servers, internal IPs, key hosts to target next.</p>
+        <div class="cmd"><span class="c"># test for an open zone transfer</span><br>dig axfr @ns1.example.com example.com<br>nslookup -type=axfr example.com ns1.example.com</div>
+      </div>
+
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>Social engineering — focus: phishing <span class="tag exam">EXAM</span></h3>
+        <p>Manipulating <b>people</b> into revealing info or creds — exploits human weakness, not a system bug.</p>
+        <h4 class="s">Techniques</h4>
+        <ul><li><b>Phishing</b> — fake emails harvesting credentials.</li><li><b>Impersonation</b> — pose as IT/vendor.</li><li><b>Dumpster diving</b> — secrets in the trash.</li><li><b>Shoulder surfing / eavesdropping.</b></li><li><b>Social-media profiling</b> — habits & targets from LinkedIn/FB/IG.</li></ul>
+        <h4 class="s">Mitigation &amp; limits</h4>
+        <p><b>Mitigate:</b> security-awareness training, a reporting culture, verification procedures, minimise public info. <b>Limitation:</b> phishing relies on human error — trained, skeptical staff and reporting defeat it; hard to target precisely at scale.</p>
+      </div>
+    </div>
+
+    <aside class="rail">
+      <div class="intel"><div class="h"><span class="d"></span>Bonus Intel · Whois</div>
+        <h4>What a Whois lookup leaks</h4>
+        <p>Registrar, registration &amp; expiry dates, name servers, registrant contact, and IP geolocation.</p>
+      </div>
+      <div class="intel"><div class="h"><span class="d"></span>Bonus Intel · Google dorking</div>
+        <h4>Advanced operators (GHDB)</h4>
+        <ul><li><code>site:</code> <code>filetype:</code></li><li><code>inurl:</code> <code>intitle:</code></li></ul>
+        <p>Surfaces login portals, exposed docs, error messages, config files, even unprotected IoT panels.</p>
+      </div>
+      <div class="intel"><div class="h"><span class="d"></span>Bonus Intel · Recon toolkit</div>
+        <h4>Names worth knowing</h4>
+        <p><b>Maltego, Recon-ng, FOCA, Shodan, theHarvester</b> (emails), <b>Sublist3r</b> (subdomains), <b>crt.sh</b> (subdomains via certs), <b>Netcraft</b>, OSINT Framework.</p>
+      </div>
+      <div class="intel"><div class="h"><span class="d"></span>Bonus Intel · Email & website</div>
+        <h4>Two more recon angles</h4>
+        <p><b>Email tracking</b> reveals recipient IP, geolocation, OS/browser, read time. <b>Website mirroring</b> (HTTrack) clones a site for offline study. <b>Traceroute</b> maps the path to a host.</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ================= MODULE 03 ================= -->
+<section class="mod" id="m03">
+  <div class="modhead"><span class="idx">MOD 03</span><h2>Computer &amp; Network Scanning</h2><span class="sub">handshake · host discovery · scans · evasion</span></div>
+  <div class="callbox big"><h3>★ Heavy zone — also Essay 2</h3><p>Your prep notes this directly: the <b>IDS/firewall evasion</b> material your old notes filed under "Lab 4 enumeration" actually lives <b>here in Module 03</b>. Revise it here.</p></div>
+  <div class="grid2">
+    <div>
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>TCP 3-way handshake &amp; flags <span class="tag exam">EXAM ★</span></h3>
+        <p><b>Setup:</b> <code>SYN</code> → <code>SYN/ACK</code> → <code>ACK</code> = connection established. <b>Teardown:</b> graceful <code>FIN</code> exchange, or abrupt <code>RST</code>.</p>
+        <div class="tablewrap"><table>
+          <tr><th>Flag</th><th>Meaning</th></tr>
+          <tr><td class="port">SYN</td><td>Synchronize — start a connection</td></tr>
+          <tr><td class="port">ACK</td><td>Acknowledge a received segment</td></tr>
+          <tr><td class="port">FIN</td><td>Finish — graceful close</td></tr>
+          <tr><td class="port">RST</td><td>Reset — abort the connection</td></tr>
+          <tr><td class="port">PSH</td><td>Push — deliver data immediately</td></tr>
+          <tr><td class="port">URG</td><td>Urgent — prioritise this data</td></tr>
+        </table></div>
+      </div>
+
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>Host discovery: ARP vs ICMP <span class="tag exam">EXAM ★</span> <span class="tag essay">ESSAY 2</span></h3>
+        <p>Finding <b>live hosts</b> (different question from finding open ports).</p>
+        <ul>
+          <li><b>ICMP echo ping</b> (<code>-PE</code>) — classic ping; simple but <b>often blocked by firewalls</b>.</li>
+          <li><b>ARP ping scan</b> — Layer-2; <b>most reliable on the local subnet</b>, finds hosts even behind restrictive firewalls, and shows the <b>MAC address</b>. Can't cross routers.</li>
+          <li><b>UDP ping</b> (<code>-PU</code>, default port 40125) — useful against hosts with strict TCP filtering.</li>
+        </ul>
+        <div class="cmd"><span class="c"># ping sweep + verify</span><br>nmap -sn 192.168.x.0/24 <span class="c"># host discovery only, no port scan</span><br>arp-scan --localnet</div>
+      </div>
+
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>Port scanning techniques <span class="tag exam">EXAM</span> <span class="tag essay">ESSAY 2</span></h3>
+        <div class="tablewrap"><table>
+          <tr><th>Scan</th><th>Nmap</th><th>How / why</th></tr>
+          <tr><td><b>TCP Connect (full open)</b></td><td><code>-sT</code></td><td>Completes the full handshake → reliable but <b>logged</b>.</td></tr>
+          <tr><td><b>SYN / half-open (stealth)</b></td><td><code>-sS</code></td><td>SYN→SYN/ACK→<b>RST</b> (never finishes). Stealthier, needs root.</td></tr>
+          <tr><td><b>NULL / FIN / Xmas</b></td><td><code>-sN -sF -sX</code></td><td>Inverse flag scans. Open port = no reply, closed = RST.</td></tr>
+          <tr><td><b>UDP</b></td><td><code>-sU</code></td><td>No handshake; slow; result often open|filtered.</td></tr>
+          <tr><td><b>ACK</b></td><td><code>-sA</code></td><td>Maps firewall rules (stateful vs simple filter).</td></tr>
+        </table></div>
+        <p style="margin-top:10px"><span class="tag trap">TRAP</span> Inverse scans (NULL/FIN/Xmas): <b>FIN</b>=FIN only, <b>NULL</b>=no flags, <b>Xmas</b>=FIN+URG+PSH. Work on BSD-style stacks, <b>not on Windows</b> hosts.</p>
+      </div>
+
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>Service/version detection &amp; banner grabbing <span class="tag exam">EXAM ★</span></h3>
+        <p><code>nmap -sV</code> fingerprints the <b>service + version</b>; <code>nmap -O</code> guesses the <b>OS</b>. Why it matters: a version string lets you <b>map known CVEs</b> straight to that service and pick a matching exploit.</p>
+        <div class="pair">
+          <div class="p a"><h5>Active banner grab</h5><p>Send crafted/malformed packets; compare the TCP/IP-stack responses to a database.</p></div>
+          <div class="p b"><h5>Passive banner grab</h5><p>Sniff existing traffic and infer the OS from telltale signs — no probing.</p></div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>Scanning beyond IDS/firewall (evasion) <span class="tag exam">EXAM ★</span> <span class="tag essay">ESSAY 2</span></h3>
+        <p><b>Packet fragmentation</b> — split the probe into tiny fragments; many IDS skip fragmented packets (too costly to reassemble), and the host reassembles them. Tools: <code>nmap -f</code>, fragroute.</p>
+        <h4 class="s">The rest of the evasion toolkit</h4>
+        <ul>
+          <li><b>IP decoys</b> (<code>-D</code>) &amp; <b>IP spoofing</b> — hide your real source among fakes.</li>
+          <li><b>Source-port manipulation</b> — disguise as a trusted port (e.g. 53/80).</li>
+          <li><b>Source routing, custom packets, bad checksums.</b></li>
+          <li><b>Randomize host order</b>; <b>slow / timing scans</b> to stay under detection thresholds.</li>
+          <li><b>Proxy servers / proxy chaining</b> &amp; <b>anonymizers</b> — bury the origin.</li>
+        </ul>
+      </div>
+    </div>
+
+    <aside class="rail">
+      <div class="intel"><div class="h"><span class="d"></span>Bonus Intel · Scanning tools</div>
+        <h4>Tool → purpose</h4>
+        <ul><li><b>Nmap / Zenmap</b> — host/port/service/OS</li><li><b>Hping3</b> — custom packets, firewall testing, ACK probing</li><li><b>Metasploit</b> — exploit + scanning modules</li><li><b>NetScanTools Pro, Unicornscan</b></li></ul>
+      </div>
+      <div class="intel"><div class="h"><span class="d"></span>Bonus Intel · Nmap flag cheat</div>
+        <h4>Quick recall</h4>
+        <ul><li><code>-sn</code> host discovery only</li><li><code>-sS/-sT</code> SYN / connect</li><li><code>-sV</code> version · <code>-O</code> OS</li><li><code>-sX/-sF/-sN</code> Xmas/FIN/NULL</li><li><code>-PE</code> ICMP echo · <code>-f</code> fragment · <code>-D</code> decoy</li></ul>
+      </div>
+      <div class="intel"><div class="h"><span class="d"></span>Bonus Intel · 3 scan goals</div>
+        <h4>Why scan at all</h4>
+        <p>Network scan → live IPs. Port scan → open ports/services. Vuln scan → known weaknesses.</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ================= PORTS & FLAGS REFERENCE ================= -->
+<section class="mod" id="ref">
+  <div class="modhead"><span class="idx">QUICK REF</span><h2>Ports &amp; port groups</h2><span class="sub">prime MCQ fodder</span></div>
+  <p style="max-width:70ch;color:var(--ink-soft);margin-top:-8px">Built from your slides + tutorials + the prep. <span class="tag trap">CONFIRM</span> LDAP&nbsp;389 / NTP&nbsp;123 are the standard numbers (the protocols are covered, but the deck text didn't print the numbers).</p>
+  <div class="grid2">
+    <div>
+      <div class="tablewrap"><table>
+        <tr><th>Port</th><th>Proto</th><th>Service</th><th>Note for the exam</th></tr>
+        <tr><td class="port">20/21</td><td>TCP</td><td>FTP (data / control)</td><td>Cleartext; brute-force & sniffing target</td></tr>
+        <tr><td class="port">22</td><td>TCP</td><td><b>SSH</b></td><td><b>Secure</b> remote admin — the safe Linux choice</td></tr>
+        <tr><td class="port">23</td><td>TCP</td><td><b>Telnet</b></td><td><b>Insecure</b> — sends creds in cleartext</td></tr>
+        <tr><td class="port">25 / 587</td><td>TCP</td><td>SMTP</td><td>VRFY/EXPN/RCPT user enumeration</td></tr>
+        <tr><td class="port">53</td><td>TCP/UDP</td><td>DNS</td><td>UDP for queries; TCP for zone transfer (AXFR)</td></tr>
+        <tr><td class="port">69</td><td>UDP</td><td>TFTP</td><td>Connectionless file transfer</td></tr>
+        <tr><td class="port">80 / 443</td><td>TCP</td><td>HTTP / HTTPS</td><td>Web traffic</td></tr>
+        <tr><td class="port">123</td><td>UDP</td><td>NTP</td><td>Time sync — can leak host list</td></tr>
+        <tr><td class="port">135</td><td>TCP</td><td>MS RPC endpoint mapper</td><td>DoS / RPC flaws</td></tr>
+        <tr><td class="port">137/138</td><td>UDP</td><td>NetBIOS name / datagram</td><td>Windows sharing</td></tr>
+        <tr><td class="port">139</td><td>TCP</td><td>NetBIOS session</td><td>Open 139 → check shares (don't confuse with 445)</td></tr>
+        <tr><td class="port">161</td><td>UDP</td><td>SNMP</td><td>Default community strings = big leak</td></tr>
+        <tr><td class="port">179</td><td>TCP</td><td>BGP</td><td>Routing; hijack/flood target</td></tr>
+        <tr><td class="port">389</td><td>TCP</td><td>LDAP</td><td>Directory / AD users & groups</td></tr>
+        <tr><td class="port">445</td><td>TCP</td><td><b>SMB</b></td><td>The classic Win2000 target (MS08-067/MS17-010)</td></tr>
+        <tr><td class="port">500</td><td>UDP</td><td>ISAKMP / IKE</td><td>VPN key exchange (IPsec)</td></tr>
+        <tr><td class="port">3389</td><td>TCP</td><td><b>RDP</b></td><td>Windows remote desktop</td></tr>
+      </table></div>
+    </div>
+    <aside class="rail">
+      <div class="intel"><div class="h"><span class="d"></span>Port number groups</div>
+        <h4>The three ranges <span class="tag trap" style="margin-left:4px">confirm</span></h4>
+        <ul><li><b>Well-known</b> — 0–1023</li><li><b>Registered</b> — 1024–49151</li><li><b>Dynamic / Private</b> — 49152–65535</li></ul>
+        <p style="font-size:12.5px">Standard ranges (your slide was a diagram).</p>
+      </div>
+      <div class="intel"><div class="h"><span class="d"></span>Wireshark</div>
+        <h4>The packet-analysis tool <span class="tag exam" style="margin-left:4px">exam</span></h4>
+        <p>Captures &amp; inspects live traffic. In the scan lab you use it to see the <b>SYN → SYN/ACK → ACK</b> handshake and spot which scan type generated the packets.</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ================= MODULE 04 ================= -->
+<section class="mod" id="m04">
+  <div class="modhead"><span class="idx">MOD 04</span><h2>System Enumeration</h2><span class="sub">NetBIOS · SNMP · LDAP · NTP · NFS · SMTP · DNS</span></div>
+  <div class="grid2">
+    <div>
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>What enumeration is <span class="tag exam">EXAM</span> <span class="tag essay">ESSAY 1·2</span></h3>
+        <p>Extracting <b>usernames, machine names, shares, services</b> by making <b>active connections</b> and sending directed queries. This is where "port 445 is open" becomes "share X, user Y, version Z" — i.e. it <b>turns scan results into the exact exploit to use</b>.</p>
+      </div>
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>Enumeration types — what each leaks <span class="tag exam">EXAM ★</span></h3>
+        <div class="tablewrap"><table>
+          <tr><th>Type</th><th>Port</th><th>What you pull</th></tr>
+          <tr><td><b>NetBIOS</b></td><td class="port">137-139</td><td>Domain computer list, shares, users; <b>IPC$ null session</b> opens it up</td></tr>
+          <tr><td><b>SNMP</b></td><td class="port">161/udp</td><td>System/network info via <b>community strings</b> (often default <code>public</code>)</td></tr>
+          <tr><td><b>LDAP</b></td><td class="port">389</td><td>Directory / Active Directory users &amp; groups</td></tr>
+          <tr><td><b>NTP</b></td><td class="port">123/udp</td><td>Connected hosts &amp; their IPs from the time server</td></tr>
+          <tr><td><b>NFS</b></td><td class="port">RPC</td><td>Exported dirs &amp; connected clients (uses client IP as its only credential)</td></tr>
+          <tr><td><b>SMTP</b></td><td class="port">25/587</td><td>Valid users via <code>VRFY</code>, <code>EXPN</code>, <code>RCPT TO</code></td></tr>
+          <tr><td><b>DNS</b></td><td class="port">53</td><td>Whole zone via misconfigured <b>AXFR</b> transfer</td></tr>
+        </table></div>
+        <div class="cmd"><span class="c"># the workhorses</span><br>enum4linux -a <span class="o">&lt;target&gt;</span> <span class="c"># NetBIOS/SMB: users, groups, shares</span><br>snmpwalk -v1 -c public <span class="o">&lt;target&gt;</span><br>rpcclient -U "" <span class="o">&lt;target&gt;</span> <span class="c"># then: enumdomusers / enumdomgroups</span></div>
+      </div>
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>Secure remote admin: SSH vs Telnet <span class="tag exam">EXAM</span></h3>
+        <p><b>SSH (22)</b> is encrypted — the secure way to administer Linux. <b>Telnet (23)</b> sends everything, including credentials, in <b>cleartext</b>. Exam answer for "secure remote administration of Linux" = <b>SSH</b>.</p>
+      </div>
+    </div>
+    <aside class="rail">
+      <div class="intel"><div class="h"><span class="d"></span>Bonus Intel · Enum techniques</div>
+        <h4>Ways in</h4>
+        <ul><li>Usernames from <code>user@domain</code> email IDs</li><li><b>Default passwords</b> (never changed)</li><li>Active Directory username brute-force (logon-hours error quirk)</li></ul>
+      </div>
+      <div class="intel"><div class="h"><span class="d"></span>Bonus Intel · SNMP internals</div>
+        <h4>Commands &amp; MIB</h4>
+        <p>GetRequest, GetNextRequest, GetResponse, SetRequest, <b>Trap</b>. The <b>MIB</b> is the virtual database of all objects SNMP manages.</p>
+      </div>
+      <div class="intel"><div class="h"><span class="d"></span>Bonus Intel · Tools</div>
+        <h4>By protocol</h4>
+        <ul><li>NetBIOS: <code>nbtstat</code>, <code>net view</code></li><li>SMTP: VRFY/EXPN/RCPT</li><li>DNS: <code>dig</code>, <code>nslookup</code></li></ul>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ================= MODULE 05 ================= -->
+<section class="mod" id="m05">
+  <div class="modhead"><span class="idx">MOD 05</span><h2>Vulnerability Analysis</h2><span class="sub">purpose · credentialed vs not · lifecycle</span></div>
+  <div class="grid2">
+    <div>
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>Why we do VA <span class="tag exam">EXAM</span> <span class="tag essay">ESSAY 4</span></h3>
+        <p>To <b>identify, classify and prioritize</b> weaknesses in systems/networks <b>before attackers do</b>, then plan remediation by severity.</p>
+      </div>
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>Credentialed vs non-credentialed <span class="tag exam">EXAM ★</span></h3>
+        <p>This exact contrast is flagged in your prep.</p>
+        <div class="pair">
+          <div class="p a"><h5>Credentialed (authenticated)</h5><p>You have valid logins. <b>Deeper</b> — finds OS/app vulns; <b>more reliable</b>. Cost: managing credentials is complex.</p></div>
+          <div class="p b"><h5>Non-credentialed (unauthenticated)</h5><p>No logins; scans only exposed services. <b>Quick overview</b>; <b>less reliable</b>, prone to false positives, misses internal/firewalled vulns.</p></div>
+        </div>
+      </div>
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>Vulnerability-management life cycle <span class="tag exam">EXAM</span></h3>
+        <p>Identify assets &amp; baseline → <b>Vulnerability scan</b> → Risk assessment → <b>Remediation</b> → Verification (rescan) → Monitor. Repeat regularly.</p>
+      </div>
+    </div>
+    <aside class="rail">
+      <div class="intel"><div class="h"><span class="d"></span>Bonus Intel · Scoring</div>
+        <h4>The standards <span class="tag trap" style="margin-left:4px">confirm</span></h4>
+        <p><b>CVSS</b> scores severity; <b>CVE</b> = the unique vuln ID; <b>CWE</b> = weakness category; <b>NVD</b> = the database. (Severity bands were a slide diagram.)</p>
+      </div>
+      <div class="intel"><div class="h"><span class="d"></span>Bonus Intel · Assessment types</div>
+        <h4>So many "active/passive" pairs</h4>
+        <ul><li>Active vs Passive (scan vs sniff)</li><li>Internal vs External</li><li>Host- vs Network- vs App- vs DB- vs Wireless-based</li><li>Manual vs Automated</li></ul>
+      </div>
+      <div class="intel"><div class="h"><span class="d"></span>Bonus Intel · VA tools</div>
+        <h4>Names</h4>
+        <p><b>Nessus, OpenVAS, Qualys, GFI LanGuard, Nikto.</b> For the lab you used <b>Metasploit + Nmap</b>.</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ================= MODULE 06 ================= -->
+<section class="mod" id="m06">
+  <div class="modhead"><span class="idx">MOD 06</span><h2>System Hacking &amp; Post-Exploitation</h2><span class="sub">PrivEsc · persistence · C2 · covering tracks</span></div>
+  <div class="grid2">
+    <div>
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>Privilege escalation: horizontal vs vertical <span class="tag exam">EXAM ★</span></h3>
+        <div class="pair">
+          <div class="p a"><h5>Horizontal</h5><p>Same privilege level, but access <b>another peer user's</b> stuff. E.g. banking user A reaches user B's account.</p></div>
+          <div class="p b"><h5>Vertical</h5><p>Jump to a <b>higher</b> privilege — user → admin/root. E.g. a normal user reaching admin functions.</p></div>
+        </div>
+      </div>
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>Gaining &amp; maintaining access <span class="tag exam">EXAM</span> <span class="tag essay">ESSAY 1</span></h3>
+        <p><b>Gain access:</b> crack passwords, exploit a buffer overflow, or exploit a known vulnerability (often via Metasploit). <b>Maintain access (persistence):</b> install backdoors / rootkits, hide files via <b>NTFS ADS</b>, keep a reverse shell.</p>
+      </div>
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>Malware C2 behaviour <span class="tag exam">EXAM</span></h3>
+        <p>A compromised host <b>beacons / calls back</b> to an attacker-controlled server over a two-way channel — web traffic, email, or DNS — usually <b>encrypted</b> to hide it. Network anti-forensics channels: <b>reverse HTTP shells, reverse ICMP tunnels, DNS tunneling.</b></p>
+      </div>
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>Covering tracks / anti-forensics <span class="tag exam">EXAM ★</span> <span class="tag essay">ESSAY 1</span></h3>
+        <ul>
+          <li><b>Disable auditing</b>, then <b>clear</b> or <b>manipulate</b> logs (delete only attack events to dodge detection).</li>
+          <li>Windows event logs: <code>SECEVENT.EVT</code> (security — failed logins, file access without rights), <code>SYSEVENT.EVT</code> (system — driver failures), <code>APPEVENT.EVT</code> (applications).</li>
+          <li>Tooling: <code>clearev</code> in a Meterpreter shell; <code>wevtutil</code>; PowerShell; the <code>Clear_Event_Viewer_Logs.bat</code> utility.</li>
+          <li>Hide on OS via <b>NTFS ADS</b>; delete unrecoverably with <code>cipher.exe</code>; disable last-access timestamps / restore points.</li>
+        </ul>
+      </div>
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>Authentication log analysis <span class="tag exam">EXAM</span></h3>
+        <p>Defender side: tell <b>successful vs failed</b> logins apart. A burst of <b>failures then a success</b> = brute force / password guessing. Watch for off-hours admin logins = privilege abuse.</p>
+      </div>
+    </div>
+    <aside class="rail">
+      <div class="intel"><div class="h"><span class="d"></span>Bonus Intel · Windows auth</div>
+        <h4>Where passwords live</h4>
+        <p><b>SAM</b> database stores hashes (locked while Windows runs). <b>NTLM</b> = challenge/response; <b>Kerberos</b> = ticket-based via the KDC (AS + TGS), now the default — stronger than NTLM.</p>
+      </div>
+      <div class="intel"><div class="h"><span class="d"></span>Bonus Intel · Password cracking</div>
+        <h4>Attack types <span class="tag trap" style="margin-left:4px">confirm</span></h4>
+        <ul><li>Dictionary</li><li>Brute-force</li><li>Hybrid</li><li>Rainbow tables (precomputed hashes)</li></ul>
+      </div>
+      <div class="intel"><div class="h"><span class="d"></span>Bonus Intel · Metasploit</div>
+        <h4>Architecture</h4>
+        <p>Core/Base APIs on top of the <b>Rex</b> library. Modules: <b>exploits, payloads</b> (meterpreter/shell), <b>encoders</b> (dodge AV), <b>auxiliary</b> (scanners), <b>post</b>, and a <b>listener</b>. Interfaces: <code>msfconsole</code>, <code>msfvenom</code>, Armitage.</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ================= MODULE 07 ================= -->
+<section class="mod" id="m07">
+  <div class="modhead"><span class="idx">MOD 07</span><h2>Incident Response &amp; Digital Forensics</h2><span class="sub">IR life cycle · evidence · chain of custody</span></div>
+  <div class="callbox big"><h3>★ The 4-vs-6-phase trap</h3>
+    <p>Your prep flags this. Three models float around — know which your question wants. Default to the <b>NIST 4-phase</b> (what the Module 07 lecture teaches); be ready to mention the others.</p>
+    <ul>
+      <li><b>NIST 4-phase (lecture):</b> Preparation → Detection &amp; Analysis → Containment, Eradication &amp; Recovery → Post-Incident Activity (Lessons Learned).</li>
+      <li><b>SANS 6-step:</b> Preparation → Identification → Containment → Eradication → Recovery → Lessons Learned. <em>(This is the one your group forensic assignment used — and Essay 3 mirrors that assignment.)</em></li>
+      <li><b>EC-Council IH&amp;R 9-step</b> (from Module 01) — the granular version.</li>
+    </ul>
+  </div>
+  <div class="grid2">
+    <div>
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>IR goals &amp; detection <span class="tag exam">EXAM</span> <span class="tag essay">ESSAY 3</span></h3>
+        <p><b>Goals:</b> minimise damage, reduce recovery time, restore normal operations fast. <b>Detection &amp; Analysis</b> is the hardest phase — "incidents can't always be prevented but must always be detected."</p>
+        <h4 class="s">Precursors vs Indicators</h4>
+        <div class="pair">
+          <div class="p a"><h5>Precursor</h5><p>A sign an incident <b>may happen</b> — e.g. a vuln scanner in your web logs, a public exploit released for your mail server.</p></div>
+          <div class="p b"><h5>Indicator</h5><p>A sign one <b>has/ is happening</b> — e.g. AV flags malware, IDS alerts on a successful DB attack.</p></div>
+        </div>
+        <h4 class="s">Common attack vectors</h4>
+        <p>External/removable media (USB), Attrition (brute force), Web, Email, Impersonation (spoofing/MITM/rogue AP/SQLi), Improper usage, Loss/theft of equipment.</p>
+      </div>
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>Evidence gathering &amp; handling <span class="tag exam">EXAM ★</span> <span class="tag essay">ESSAY 3</span></h3>
+        <p>Keep a detailed log for <b>every</b> piece of evidence — this is the basis of <b>chain of custody</b>:</p>
+        <ul>
+          <li>Identifying info: location, serial &amp; model number, hostname, <b>MAC &amp; IP</b>.</li>
+          <li>Name, title &amp; phone of everyone who <b>collected or handled</b> it.</li>
+          <li><b>Time &amp; date (with time zone)</b> of every handling event.</li>
+          <li>Where it was stored (tamper-evident, secure).</li>
+        </ul>
+        <p>Containment strategy is chosen on: potential damage, <b>need to preserve evidence</b>, service availability, time/resources, and effectiveness.</p>
+      </div>
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>Eradication, recovery &amp; lessons learned <span class="tag exam">EXAM</span></h3>
+        <p><b>Eradicate:</b> delete malware, disable breached accounts, fix exploited vulns across <b>all</b> affected hosts. <b>Recover:</b> restore from clean backups, rebuild, patch, change passwords, tighten the perimeter. <b>Lessons learned</b> (most often skipped): what happened, when, how well the team did, what to watch for next time.</p>
+      </div>
+    </div>
+    <aside class="rail">
+      <div class="intel"><div class="h"><span class="d"></span>Bonus Intel · IR team</div>
+        <h4>Who's on the team</h4>
+        <ul><li><b>Director</b> — senior mgmt authority</li><li><b>Lead Investigator</b> — runs the response</li><li><b>Forensic Technicians</b> — analyse evidence</li><li><b>Response Handler</b> — 1st responder, secures scene</li><li><b>Evidence Handler</b> — chain of custody</li><li><b>Legal Adviser</b>, Dispatchers</li></ul>
+      </div>
+      <div class="intel"><div class="h"><span class="d"></span>Bonus Intel · Definitions</div>
+        <h4>Word-perfect terms</h4>
+        <p><b>Incident</b> = anything violating security policy. <b>Anomaly</b> = something abnormal. <b>Forensics</b> = applying scientific knowledge to legal problems.</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ================= MODULE 08 ================= -->
+<section class="mod" id="m08">
+  <div class="modhead"><span class="idx">MOD 08</span><h2>Memory Acquisition &amp; Analysis</h2><span class="sub">imaging · hashing · Volatility</span></div>
+  <div class="grid2">
+    <div>
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>Forensics process &amp; hashing <span class="tag exam">EXAM ★</span> <span class="tag essay">ESSAY 3</span></h3>
+        <p><b>Process:</b> Acquisition → Analysis → Documentation/Presentation. <b>Goals:</b> what happened, how, who, when, where, why.</p>
+        <p><b>Imaging</b> = a bit-for-bit forensic copy (use a write blocker; work on the copy, preserve the original). <b>Hashing</b> proves integrity: take an <b>MD5/SHA-256</b> hash before and after — if the hash is unchanged, the evidence is <b>unaltered</b>.</p>
+        <p><span class="tag trap">TRAP</span> Hashing = <b>integrity</b>, not confidentiality, and it's <b>one-way</b> (can't be reversed).</p>
+      </div>
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>Why memory is gold <span class="tag exam">EXAM</span></h3>
+        <p>Volatile RAM holds things the disk never sees: <b>running processes, executed commands, cleartext passwords, unencrypted data, open network connections, IPs, injected trojans.</b> Capture it before powering off.</p>
+      </div>
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>Volatility workflow <span class="tag essay">ESSAY 3</span></h3>
+        <div class="cmd"><span class="c"># identify, then list, then hunt</span><br>vol.py -f mem.raw imageinfo<br>vol.py -f mem.raw --profile=&lt;P&gt; pslist / pstree / psscan<br>vol.py -f mem.raw --profile=&lt;P&gt; psxview <span class="c"># find hidden processes</span><br>vol.py -f mem.raw --profile=&lt;P&gt; netscan <span class="c"># network connections</span></div>
+        <p><span class="tag trap">IoC</span> A great red flag: <code>lsass.exe</code>'s parent <b>should be</b> <code>wininit.exe</code>. If its parent is <code>explorer.exe</code>, it's a fake process wearing a legit name.</p>
+      </div>
+    </div>
+    <aside class="rail">
+      <div class="intel"><div class="h"><span class="d"></span>Bonus Intel · Acquisition formats</div>
+        <h4>Where memory hides</h4>
+        <ul><li><b>RAW</b> (.raw/.bin/.dd) — FTK Imager, WinPMEM</li><li><b>hiberfil.sys</b> — hibernation file</li><li><b>pagefile.sys</b> — swapped memory</li><li><b>.vmem/.vmsn</b> — VMware snapshot</li><li><b>MEMORY.DMP</b> — crash dump (BSOD)</li></ul>
+      </div>
+      <div class="intel"><div class="h"><span class="d"></span>Bonus Intel · More plugins</div>
+        <h4>What they pull</h4>
+        <ul><li><code>handles</code> — files/keys a process touches</li><li><code>filescan</code> — open/hidden files</li><li><code>procexedump</code> / <code>memdump</code> — pull the executable / its memory</li><li><code>connscan</code> — incl. terminated connections</li></ul>
+      </div>
+      <div class="intel"><div class="h"><span class="d"></span>Bonus Intel · Tools</div>
+        <h4>Memory analysis suites</h4>
+        <p>Mandiant <b>Memoryze &amp; Redline</b>; the <b>Volatility Framework</b> (plugin-based, cross-OS).</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ================= BONUS: CRYPTO ================= -->
+<section class="mod bonus-zone" id="crypto">
+  <div class="modhead"><span class="idx">MOD 10</span><h2>Cryptography <em>Bonus · light in prep</em></h2><span class="sub">symmetric · asymmetric · hashing</span></div>
+  <p style="max-width:72ch;color:var(--ink-soft);margin-top:-8px">Your prep only touches crypto through <b>hashing for evidence integrity</b> (covered in Module 08). The rest is here as MCQ insurance — if your lecturer confirmed crypto is out of scope, hit "Exam targets only" to hide it.</p>
+  <div class="grid2">
+    <div>
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>Symmetric vs asymmetric</h3>
+        <div class="pair">
+          <div class="p a"><h5>Symmetric (private-key)</h5><p>Same key encrypts &amp; decrypts. Fast, for bulk data. <b>DES, AES, RC4, IDEA.</b></p></div>
+          <div class="p b"><h5>Asymmetric (public-key)</h5><p>Two keys (public + private). <b>RSA, Diffie-Hellman, El Gamal, DSA.</b></p></div>
+        </div>
+        <p><b>Block vs stream:</b> block ciphers work on fixed-size blocks (AES, DES — most modern ciphers); stream ciphers encrypt bit-by-bit with a keystream (RC4, SEAL).</p>
+      </div>
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>Hashing (one-way) <span class="tag exam">links Essay 3</span></h3>
+        <p><b>MD5, SHA-1, SHA-2</b> produce a fixed-size digest that <b>can't be reversed</b>. Used to prove a file/evidence hasn't changed. The 4 crypto objectives: <b>confidentiality, integrity, authentication, non-repudiation.</b></p>
+      </div>
+    </div>
+    <aside class="rail">
+      <div class="intel funfact"><div class="h"><span class="d"></span>Bonus · Diffie-Hellman</div>
+        <h4>Key exchange over an open line</h4>
+        <p>Agree on public primes <code>n, g</code>; each side picks a secret and computes <code>A=g^x mod n</code> / <code>B=g^y mod n</code>; both derive the same shared key. <b>Lab note:</b> it's vulnerable to a <b>man-in-the-middle</b> attack — that's a likely essay/lab question.</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ================= BONUS: STEGO ================= -->
+<section class="mod bonus-zone" id="stego">
+  <div class="modhead"><span class="idx">MOD 09</span><h2>Steganography <em>Bonus · not in prep</em></h2><span class="sub">covert channels · LSB · ADS</span></div>
+  <p style="max-width:72ch;color:var(--ink-soft);margin-top:-8px">Not flagged anywhere in your prep — pure bonus. Worth a skim for MCQs (it also connects to "hiding files" in Module 06).</p>
+  <div class="grid2">
+    <div>
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>The core idea</h3>
+        <p><b>Steganography</b> = hiding the very <b>existence</b> of a message (vs cryptography, which hides the <b>meaning</b>). It's one kind of <b>covert channel</b> — moving data between parties who aren't supposed to communicate, slipping past firewalls/IDS.</p>
+        <p><b>Types:</b> image, audio, text, email, and whitespace (trailing spaces/tabs).</p>
+      </div>
+      <div class="block">
+        <h3 class="t"><svg class="r"><use href="#ret"/></svg>LSB &amp; ADS</h3>
+        <p><b>Least Significant Bit</b> — swap the rightmost bit of each byte/pixel for your secret bits; the image looks unchanged. <b>Alternate Data Streams (NTFS)</b> — hide data in a second stream: <code>normal.txt:hidden.txt</code> doesn't show in Explorer.</p>
+      </div>
+    </div>
+    <aside class="rail">
+      <div class="intel funfact"><div class="h"><span class="d"></span>Fun fact · history</div>
+        <h4>Old-school hiding</h4>
+        <p>Demaratus hid a message under the <b>wax of a tablet</b>; WWII used <b>invisible ink</b> and the <b>null cipher</b> — read the first letter of each word: <em>"Please Do Not Throw Sausage Pizza Away."</em></p>
+      </div>
+      <div class="intel funfact"><div class="h"><span class="d"></span>Fun fact · malware</div>
+        <h4>Stegoloader</h4>
+        <p>A real trojan that hid its main module inside a <b>PNG image</b> downloaded from a legit site to dodge detection.</p>
+      </div>
+      <div class="intel"><div class="h"><span class="d"></span>Bonus · detection</div>
+        <h4>File signatures &amp; tools</h4>
+        <p><b>Magic numbers</b> (file header) reveal the true type even if the extension lies. Tools: <b>TrID, Binwalk</b>, <code>file</code>; stego tools: Steghide, QuickStego, MP3Stegz, SNOW.</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ================= ESSAYS ================= -->
+<section class="mod" id="essays">
+  <div class="essaybar">
+    <p class="klabel">Section B · where the marks are</p>
+    <h2>The 4 scenario essays — battle plans</h2>
+    <p>Every point below must be <b>tied back to the scenario</b> you're given. Tap each to open the plan.</p>
+  </div>
+
+  <details class="essay" open>
+    <summary><span class="enum">1</span><span class="etitle"><h3>Attack life cycle &amp; methodology</h3><span class="meta">Modules 02·03·04·06 · usually 3 sub-parts</span></span><span class="chev">›</span></summary>
+    <div class="ebody">
+      <p>Walk the full chain for the scenario org (often one running legacy systems). Sub-parts typically:</p>
+      <h4 class="s">(a) Collect public information</h4>
+      <p>Passive recon first: <b>Whois</b>, DNS records, <b>crt.sh</b> subdomains, <b>Google dorks</b>, <b>theHarvester</b> emails, LinkedIn/job posts, document metadata. Then active: Nmap <b>host discovery</b> → <b>port/service scan</b> (<code>-sV</code>).</p>
+      <h4 class="s">(b) Exploit a vulnerable service + the attack you'd propose</h4>
+      <p>Use the versions from <code>-sV</code> to map CVEs. Two strong routes: <b>(i)</b> legacy SMB on 445 → <b>MS08-067 / MS17-010</b> via Metasploit; <b>(ii)</b> client-side → craft a payload with <code>msfvenom</code> (meterpreter reverse_tcp), deliver via phishing, catch it with <code>multi/handler</code>. Then privilege escalation → persistence → covering tracks.</p>
+      <h4 class="s">(c) Defensive controls that mitigate it</h4>
+      <p>Patching, <b>isolate/segment legacy systems</b>, disable SMBv1 &amp; unused services, least privilege + MFA, email filtering + awareness training, application whitelisting, egress control, IDS/IPS.</p>
+    </div>
+  </details>
+
+  <details class="essay">
+    <summary><span class="enum">2</span><span class="etitle"><h3>Scanning, host/port discovery &amp; IDS evasion</h3><span class="meta">Module 03 (+04)</span></span><span class="chev">›</span></summary>
+    <div class="ebody">
+      <h4 class="s">Live hosts vs open ports/services</h4>
+      <p><b>Host discovery</b> (ICMP/ARP/UDP ping, ping sweep, <code>nmap -sn</code>) answers "which machines are up". <b>Port/service discovery</b> (<code>-sT/-sS/-sV</code>) answers "which doors are open and what's behind them".</p>
+      <h4 class="s">The basics to explain</h4>
+      <p><b>ICMP ping</b> — echo request/reply, may be blocked. <b>ARP scan</b> — Layer-2, very reliable on the subnet, shows MAC. <b>TCP SYN scan</b> — half-open stealth. <b>Service-version detection</b> — <code>-sV</code> fingerprints software + version.</p>
+      <h4 class="s">How enumeration prepares exploitation</h4>
+      <p>It turns "445 open" into "SMB share X, user Y, version Z" → you can pick the exact exploit.</p>
+      <h4 class="s">How unusual packets evade IDS/IPS</h4>
+      <p><b>Slow/timing scans</b> stay under detection thresholds; <b>fragmentation</b> slips past; plus decoys, spoofing, source-port tricks, bad checksums, proxies/anonymizers.</p>
+    </div>
+  </details>
+
+  <details class="essay">
+    <summary><span class="enum">3</span><span class="etitle"><h3>Incident response &amp; digital evidence handling</h3><span class="meta">Modules 07 &amp; 08 · mirrors your group assignment</span></span><span class="chev">›</span></summary>
+    <div class="ebody">
+      <h4 class="s">Frame it with a life cycle</h4>
+      <p>Use the <b>NIST 4-phase</b> as the spine (Prep → Detection &amp; Analysis → Containment/Eradication/Recovery → Lessons Learned); note your assignment used the <b>SANS 6-step</b> — be ready for either.</p>
+      <h4 class="s">Imaging &amp; preservation</h4>
+      <p>Take a <b>bit-for-bit image</b> with a <b>write blocker</b>; work on the copy, never the original. Capture <b>volatile memory first</b> (order of volatility).</p>
+      <h4 class="s">Hashing &amp; chain of custody</h4>
+      <p><b>MD5/SHA-256</b> before and after — matching hash = unaltered. Log who/what/when (with time zone)/where for every handling step; store securely.</p>
+      <h4 class="s">Best practices</h4>
+      <p>Don't alter the original, photograph &amp; label, build a timeline. If a memory image is involved → <b>Volatility</b>: <code>imageinfo</code> → <code>pslist/pstree</code> → <code>psxview</code> → <code>netscan</code>.</p>
+    </div>
+  </details>
+
+  <details class="essay">
+    <summary><span class="enum">4</span><span class="etitle"><h3>Vulnerability assessment: risk &amp; remediation</h3><span class="meta">Module 05</span></span><span class="chev">›</span></summary>
+    <div class="ebody">
+      <h4 class="s">(a) How you'd conduct the VA</h4>
+      <p>Define scope → pick tools (Nessus/OpenVAS/Qualys, or Metasploit + Nmap for the lab) → choose <b>authenticated vs unauthenticated</b> → scan → <b>validate</b> findings to cut false positives.</p>
+      <h4 class="s">(b) Identify the risk</h4>
+      <p>Classify and <b>prioritize by CVSS severity</b>. Example: legacy Win2000 SMB <b>MS08-067 (CVE-2008-4250)</b> = critical remote code execution → full takeover.</p>
+      <h4 class="s">(c) Remediation recommendations</h4>
+      <p>Patch/upgrade, disable SMBv1, <b>segment or decommission the EOL OS</b>, least privilege, firewall rules, then <b>rescan to verify</b>.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ================= TRAPS ================= -->
+<section class="mod" id="traps">
+  <div class="modhead"><span class="idx">⚠ TRAPS</span><h2>Things that catch people out</h2><span class="sub">quick pre-exam scan</span></div>
+  <div class="grid2">
+    <div>
+      <div class="callbox"><h3>"Passive vs Active" means 3 different things</h3>
+        <ul>
+          <li><b>Footprinting:</b> no contact (OSINT) vs touching the target (scanning).</li>
+          <li><b>Banner grabbing:</b> sniff traffic vs send crafted packets.</li>
+          <li><b>Vulnerability assessment:</b> sniff the network vs use active scanners.</li>
+        </ul>
+      </div>
+      <div class="callbox"><h3>IR phases — 4 vs 6 vs 9</h3>
+        <p><b>NIST 4</b> (lecture default) · <b>SANS 6</b> (your group assignment) · <b>EC-Council IH&amp;R 9</b>. Read the question and pick the right one.</p>
+      </div>
+      <div class="callbox"><h3>Scan-type pairs</h3>
+        <ul>
+          <li><b>SYN scan</b> = half-open / stealth (never finishes the handshake); <b>Connect scan</b> = full &amp; logged.</li>
+          <li>Inverse scans (NULL/FIN/Xmas) work on <b>BSD stacks, not Windows</b>.</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="callbox"><h3>Don't mix up the ports</h3>
+        <p><b>NetBIOS</b> = 137/138 UDP + 139 TCP; <b>SMB</b> = 445 TCP. <b>SSH</b> 22 (secure) vs <b>Telnet</b> 23 (cleartext). <b>RDP</b> 3389.</p>
+      </div>
+      <div class="callbox"><h3>CTI: Tactical vs Technical</h3>
+        <p><b>Technical</b> = the raw IoCs (hashes, C2 IPs/domains). <b>Tactical</b> = the TTP/behaviour patterns. Audience pins the answer: executives→Strategic, defenders/architects→Tactical, responders→Operational, tools→Technical.</p>
+      </div>
+      <div class="callbox"><h3>Evasion is Module 03</h3>
+        <p>Fragmentation, decoys, slow scans — all <b>scanning</b> material, not enumeration. Your old note mis-filed it.</p>
+      </div>
+      <div class="callbox"><h3>Hashing ≠ encryption</h3>
+        <p>Hashing gives <b>integrity</b> and is <b>one-way</b>. Encryption gives <b>confidentiality</b> and is reversible with the key.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GAPS ================= -->
+<section id="gaps">
+  <div class="gapssec">
+    <h2>Gaps &amp; things to confirm with you</h2>
+    <p class="intro">As you asked, I didn't surf the web to fill holes. A few of your slides were <b>image/diagram-only</b> (no readable text), so I used standard textbook knowledge for those bits and marked them <span class="tag trap">confirm</span> in the page. Send me the slide content for any of these and I'll swap in your exact version:</p>
+    <ul>
+      <li><b>Kill-chain per-stage countermeasures</b> (M01 diagram) — I used the standard set; your slide may name specific ones.</li>
+      <li><b>Defense-in-depth layer diagram</b>, <b>classification of attacks</b>, and <b>hacker classes</b> (M01) — standard versions used.</li>
+      <li><b>TCP flags table</b> and <b>port-number group ranges</b> (M03 diagrams) — standard meanings/ranges used.</li>
+      <li><b>CVSS severity bands</b> and the <b>vulnerability-classification</b> chart (M05 diagrams).</li>
+      <li><b>Password-cracking types</b> (M06 diagram) and the forensic <b>"analysis approaches"</b> slide (M07).</li>
+      <li><b>Standard port numbers for LDAP (389) and NTP (123)</b> — the protocols are covered in M04 but the deck text didn't print the numbers.</li>
+    </ul>
+    <p class="intro" style="margin-top:6px"><b>One thing only you can answer:</b> for <b>Essay 3</b>, does your lecturer want the <b>NIST 4-phase</b> or the <b>SANS 6-step</b> IR model? Your group assignment used SANS, but the lecture slides teach NIST. If you tell me, I'll lock the page to one and drop the ambiguity. Also tell me if <b>Crypto / Stego are confirmed out of scope</b> — I'll delete those bonus zones entirely.</p>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  EHIR Exam Dossier · CT080-3-2 · built from your prep + 11 decks + 5 tutorials · <span style="color:var(--target-ink)">red = exam targets</span> · <span style="color:var(--intel-ink)">green = bonus intel</span>
+</footer>
+</main>
+
+<script>
+(function(){
+  var btn=document.getElementById('scope');
+  btn.addEventListener('click',function(){
+    var on=document.body.classList.toggle('focus');
+    btn.textContent=on?'Show everything':'Exam targets only';
+    if(on){window.scrollTo({top:0,behavior:'smooth'});}
+  });
+})();
+</script>
+</body>
+</html>
