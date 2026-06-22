@@ -180,6 +180,22 @@ details[open] .chev{transform:rotate(90deg)}
 .ebody{padding:0 20px 20px;border-top:1px solid var(--line-soft)}
 .ebody h4.s{margin-top:16px}
 .ebody p,.ebody li{font-size:14.5px}
+/* ---------- essay deep-dive helpers ---------- */
+.ebody .testing{background:var(--target-soft);border-left:3px solid var(--target);border-radius:0 9px 9px 0;padding:11px 15px;margin:0 0 6px;font-size:14px;color:var(--ink-soft)}
+.ebody .testing b{color:var(--target-ink)}
+.ebody .lbl{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);display:block;margin:22px 0 9px;padding-bottom:6px;border-bottom:1px dashed var(--line)}
+.ans-structure{counter-reset:step;list-style:none;padding:0;margin:4px 0 8px}
+.ans-structure li{counter-increment:step;position:relative;padding:9px 13px 9px 42px;margin:0 0 7px;border:1px solid var(--line);border-radius:10px;background:var(--paper);font-size:14px;color:var(--ink-soft);line-height:1.5}
+.ans-structure li b{color:var(--ink)}
+.ans-structure li::before{content:counter(step);position:absolute;left:9px;top:9px;width:24px;height:24px;border-radius:7px;background:var(--ink);color:#fff;font-family:var(--mono);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center}
+.model{background:var(--bg);border-left:3px solid var(--intel);border-radius:0 9px 9px 0;padding:12px 16px;margin:4px 0 10px;font-size:14px;color:var(--ink-soft);line-height:1.6}
+.model b{color:var(--ink)}
+.model em{color:var(--intel-ink);font-style:normal;font-weight:600}
+.marks{background:var(--intel-soft);border:1px solid #BFE0DE;border-radius:10px;padding:11px 15px;margin:12px 0 4px;font-size:13.5px;color:var(--ink-soft);line-height:1.55}
+.marks b{color:var(--intel-ink)}
+.ebody .callbox{margin:12px 0 0}
+.ebody .pair{margin-top:4px}
+
 
 /* ---------- traps / callout ---------- */
 .callbox{border:1px solid var(--trap);background:var(--trap-soft);border-radius:14px;padding:18px 20px;margin:0 0 16px}
@@ -814,60 +830,170 @@ footer a{color:var(--intel-ink)}
 <section class="mod" id="essays">
   <div class="essaybar">
     <p class="klabel">Section B · where the marks are</p>
-    <h2>The 4 scenario essays — battle plans</h2>
-    <p>Every point below must be <b>tied back to the scenario</b> you're given. Tap each to open the plan.</p>
+    <h2>The 4 scenario essays — deep battle plans</h2>
+    <p>This is the hard half, so each one below now has four parts: <b>what the question is really testing</b>, <b>the concepts you must actually understand</b>, a <b>full-marks answer structure</b>, and a <b>worked example</b>. Tap to open. Golden rule: every point must be tied back to the scenario you're given — generic theory with no link to "the company in the question" loses marks.</p>
   </div>
 
   <details class="essay" open>
     <summary><span class="enum">1</span><span class="etitle"><h3>Attack life cycle &amp; methodology</h3><span class="meta">Modules 02·03·04·06 · usually 3 sub-parts</span></span><span class="chev">›</span></summary>
     <div class="ebody">
-      <p>Walk the full chain for the scenario org (often one running legacy systems). Sub-parts typically:</p>
-      <h4 class="s">(a) Collect public information</h4>
-      <p>Passive recon first: <b>Whois</b>, DNS records, <b>crt.sh</b> subdomains, <b>Google dorks</b>, <b>theHarvester</b> emails, LinkedIn/job posts, document metadata. Then active: Nmap <b>host discovery</b> → <b>port/service scan</b> (<code>-sV</code>).</p>
-      <h4 class="s">(b) Exploit a vulnerable service + the attack you'd propose</h4>
-      <p>Use the versions from <code>-sV</code> to map CVEs. Two strong routes: <b>(i)</b> legacy SMB on 445 → <b>MS08-067 / MS17-010</b> via Metasploit; <b>(ii)</b> client-side → craft a payload with <code>msfvenom</code> (meterpreter reverse_tcp), deliver via phishing, catch it with <code>multi/handler</code>. Then privilege escalation → persistence → covering tracks.</p>
-      <h4 class="s">(c) Defensive controls that mitigate it</h4>
-      <p>Patching, <b>isolate/segment legacy systems</b>, disable SMBv1 &amp; unused services, least privilege + MFA, email filtering + awareness training, application whitelisting, egress control, IDS/IPS.</p>
+      <p class="testing"><b>What's being tested:</b> can you walk a real attacker's path end-to-end against the org in the scenario, name the <b>correct technique at each stage</b>, explain <b>why each stage feeds the next</b>, and pair the attack with a <b>defence</b>. It's the Cyber Kill Chain / 5 hacking phases applied to a story, not recited as a list.</p>
+
+      <span class="lbl">The idea behind it — why the chain is a chain</span>
+      <p>The single biggest mark-winner is showing the <b>cause-and-effect link</b> between stages, because that's what proves you understand the methodology rather than memorising six words:</p>
+      <ul>
+        <li><b>Recon → Scanning:</b> you can't scan until recon has given you the IP ranges / domains / which hosts exist.</li>
+        <li><b>Scanning → Enumeration:</b> an open port (445) is just a door; enumeration is what tells you the share name, the username, the exact version behind it.</li>
+        <li><b>Enumeration → Gaining access:</b> that version string is what you match to a CVE and a specific exploit. Without it you're guessing.</li>
+        <li><b>Access → Maintaining access:</b> a shell is lost on reboot, so you escalate privilege and drop a backdoor / rootkit to stay in.</li>
+        <li><b>→ Clearing tracks:</b> finally you wipe logs and hide artefacts so the defender can't reconstruct what happened.</li>
+      </ul>
+      <p>Map this to the two models so you can name-drop either: the <b>CEH 5 phases</b> (Recon → Scanning → Gaining → Maintaining → Clearing) and the <b>Lockheed Martin 7-stage kill chain</b> (Recon → Weaponization → Delivery → Exploitation → Installation → C2 → Actions on Objectives) are the same story at two levels of detail.</p>
+
+      <span class="lbl">How to structure a full-marks answer</span>
+      <ol class="ans-structure">
+        <li><b>Frame it.</b> One line naming the model and the target from the scenario: "I'll follow the CEH attack lifecycle against [the company]'s public-facing systems."</li>
+        <li><b>Reconnaissance.</b> <b>Passive first</b> (Whois, DNS records, crt.sh subdomains, Google dorks, theHarvester for emails, LinkedIn/job posts, document metadata) — no contact, stealthy. Then <b>active</b> (probing, network mapping).</li>
+        <li><b>Scanning.</b> Host discovery (<code>nmap -sn</code>, ARP/ICMP ping sweep) → port &amp; service scan (<code>nmap -sV</code>, <code>-O</code> for OS). State what you're looking for.</li>
+        <li><b>Enumeration.</b> Pull users/shares/versions from the open services (NetBIOS/SMB, SNMP, LDAP). Turn "445 open" into "SMBv1, Win2000, share X".</li>
+        <li><b>Gaining access.</b> Map the version → CVE → exploit. Name the route (e.g. Metasploit module, or a crafted <code>msfvenom</code> payload delivered by phishing).</li>
+        <li><b>Maintaining access.</b> Privilege escalation (vertical to admin/SYSTEM), then persistence — backdoor, rootkit, scheduled task, hide via NTFS ADS.</li>
+        <li><b>Clearing tracks.</b> Disable auditing, clear/selectively edit event logs (<code>clearev</code>), timestomp, <code>cipher.exe</code> to wipe.</li>
+        <li><b>Defences (if asked, or to score extra).</b> Pair each stage with a control — see the Module 01 kill-chain table. This is often a whole sub-part.</li>
+      </ol>
+
+      <span class="lbl">Worked example — a legacy-systems company (the classic scenario)</span>
+      <p class="model"><b>Recon:</b> Whois + crt.sh reveal <em>mail.acme-corp.com</em> and an old <em>vpn.acme-corp.com</em>; a job ad mentions "Windows Server 2000". <b>Scan:</b> <code>nmap -sV</code> on that host shows <em>445/tcp open, microsoft-ds, Windows 2000</em>. <b>Enumerate:</b> a null IPC$ session lists shares and users. <b>Gain access:</b> Win2000 SMB → <b>MS08-067 (CVE-2008-4250)</b>, a critical remote code execution — fire the Metasploit module, get a Meterpreter session. <b>Maintain:</b> migrate into a stable process, add a backdoor service. <b>Clear:</b> <code>clearev</code> + wipe the dropped files. <b>Defence:</b> patch / decommission the EOL OS, segment it off the main LAN, disable SMBv1, least privilege, IDS/IPS, email filtering + awareness for the phishing route.</p>
+
+      <div class="marks"><b>Mark-grabbers:</b> name the model · keep referencing "the company in the scenario" · pair every attack step with a countermeasure · use correct tool + CVE names · and one easy point most people forget — note that as an <b>ethical hacker</b> you'd only do this <b>within an authorised scope / signed agreement</b>.</div>
+      <div class="callbox"><h3>Common slip</h3><p>Listing the phases generically with no link to the scenario, and forgetting the <b>defence</b> half when the question says "…and recommend how the organisation could prevent it." Read every sub-part.</p></div>
     </div>
   </details>
 
   <details class="essay">
     <summary><span class="enum">2</span><span class="etitle"><h3>Scanning, host/port discovery &amp; IDS evasion</h3><span class="meta">Module 03 (+04)</span></span><span class="chev">›</span></summary>
     <div class="ebody">
-      <h4 class="s">Live hosts vs open ports/services</h4>
-      <p><b>Host discovery</b> (ICMP/ARP/UDP ping, ping sweep, <code>nmap -sn</code>) answers "which machines are up". <b>Port/service discovery</b> (<code>-sT/-sS/-sV</code>) answers "which doors are open and what's behind them".</p>
-      <h4 class="s">The basics to explain</h4>
-      <p><b>ICMP ping</b> — echo request/reply, may be blocked. <b>ARP scan</b> — Layer-2, very reliable on the subnet, shows MAC. <b>TCP SYN scan</b> — half-open stealth. <b>Service-version detection</b> — <code>-sV</code> fingerprints software + version.</p>
-      <h4 class="s">How enumeration prepares exploitation</h4>
-      <p>It turns "445 open" into "SMB share X, user Y, version Z" → you can pick the exact exploit.</p>
-      <h4 class="s">How unusual packets evade IDS/IPS</h4>
-      <p><b>Slow/timing scans</b> stay under detection thresholds; <b>fragmentation</b> slips past; plus decoys, spoofing, source-port tricks, bad checksums, proxies/anonymizers.</p>
+      <p class="testing"><b>What's being tested:</b> do you understand the difference between <b>"which hosts are alive"</b> and <b>"which ports/services are open"</b>, can you explain the <b>packets behind</b> each scan, and can you explain <b>how unusual / crafted packets slip past an IDS or firewall</b>. Expect 3–4 sub-parts.</p>
+
+      <span class="lbl">The ideas behind it</span>
+      <div class="pair">
+        <div class="p a"><h5>Host discovery</h5><p>Answers <b>"which machines are up?"</b> — ICMP echo ping (often blocked), or <b>ARP scan</b> (Layer 2, only works on the local subnet but very reliable and shows the MAC), or UDP ping for strict TCP filtering.</p></div>
+        <div class="p b"><h5>Port / service discovery</h5><p>Answers <b>"which doors are open and what's behind them?"</b> — TCP/UDP scans to find open ports, then <code>-sV</code> to fingerprint the service + version.</p></div>
+      </div>
+      <p>Then the <b>why</b> behind the key scans — this is what earns marks over a bare definition:</p>
+      <ul>
+        <li><b>Why SYN / half-open (<code>-sS</code>) is "stealth":</b> it sends SYN, gets SYN/ACK, then replies <b>RST</b> instead of ACK — the connection is never completed, so older loggers that only record <i>established</i> connections never see it. <b>Connect scan (<code>-sT</code>)</b> finishes the full handshake → it gets <b>logged</b>.</li>
+        <li><b>Why NULL / FIN / Xmas work (and where they don't):</b> by RFC, a <b>closed</b> port replies RST and an <b>open</b> port stays silent to weird flag combos. So "no reply = open". They work on BSD-style TCP/IP stacks but <b>not on Windows</b>, which replies RST regardless.</li>
+        <li><b>Why <code>-sV</code> matters:</b> a version string ("vsftpd 2.3.4") is the bridge to a <b>known CVE</b> and a matching exploit — it's the whole point of scanning before attacking.</li>
+      </ul>
+
+      <span class="lbl">Why crafted packets evade an IDS/firewall (explain the mechanism, don't just list)</span>
+      <ul>
+        <li><b>Packet fragmentation</b> (<code>nmap -f</code>) — splits the probe into tiny fragments. Many IDS won't pay the cost to reassemble them, so the signature never matches; the target host reassembles them normally.</li>
+        <li><b>Decoys (<code>-D</code>) &amp; IP spoofing</b> — bury your real source IP among many fakes so the analyst can't tell who's really scanning.</li>
+        <li><b>Slow / timing scans</b> — stretch probes over time to stay <b>under the IDS's rate threshold</b> for "this looks like a scan".</li>
+        <li><b>Source-port manipulation</b> — send from a trusted port like 53 or 80 to abuse loose firewall rules that allow that traffic.</li>
+        <li><b>Proxies / proxy chaining / anonymizers</b> — route through intermediaries so logs point at them, not you.</li>
+      </ul>
+
+      <span class="lbl">How to structure a full-marks answer</span>
+      <ol class="ans-structure">
+        <li><b>Separate the two goals</b> up front: live-host discovery vs open-port/service discovery — examiners love this distinction.</li>
+        <li><b>Host discovery method</b> for the scenario (ICMP blocked by their firewall? → use ARP on-subnet) with the reasoning.</li>
+        <li><b>Port-scan technique</b> + the packet exchange; pick the stealthy one if they're trying to avoid detection.</li>
+        <li><b>Service/OS detection</b> (<code>-sV</code>, <code>-O</code>) and why the version is the key to exploitation.</li>
+        <li><b>How enumeration converts results</b> into a specific attack ("445 open" → share/user/version → exact exploit).</li>
+        <li><b>IDS/IPS evasion</b> — pick 2–3 techniques and explain <b>why each one defeats detection</b>.</li>
+      </ol>
+
+      <span class="lbl">Worked example — a firewalled network that drops ICMP</span>
+      <p class="model">ICMP ping returns nothing, so I'd run an <b>ARP scan</b> on the local subnet (<code>arp-scan --localnet</code>) to find live hosts reliably. On each host, a <b>SYN scan</b> (<code>nmap -sS</code>) for stealth, plus <code>-sV</code> to fingerprint services. To get past their IDS I'd combine <b>fragmentation</b> (<code>-f</code>) with a couple of <b>decoys</b> (<code>-D</code>) and a <b>slow timing</b> template — fragments dodge signature matching, decoys hide my IP, slow timing stays under the scan-rate alarm. The open services + versions then feed enumeration to pick the exploit.</p>
+
+      <div class="marks"><b>Mark-grabbers:</b> the live-host-vs-open-port distinction · correct nmap flags · the actual <b>packet exchange</b> for SYN/Connect · a real <b>reason</b> for each evasion technique.</div>
+      <div class="callbox"><h3>Common slips</h3><p>Mixing up host discovery with port scanning · forgetting that NULL/FIN/Xmas <b>fail on Windows</b> · and remember evasion is taught in <b>Module 03 (scanning)</b>, not the enumeration lab.</p></div>
     </div>
   </details>
 
   <details class="essay">
     <summary><span class="enum">3</span><span class="etitle"><h3>Incident response &amp; digital evidence handling</h3><span class="meta">Modules 07 &amp; 08 · mirrors your group assignment</span></span><span class="chev">›</span></summary>
     <div class="ebody">
-      <h4 class="s">Frame it with a life cycle</h4>
-      <p>Use the <b>NIST 4-phase</b> as the spine (Prep → Detection &amp; Analysis → Containment/Eradication/Recovery → Lessons Learned); note your assignment used the <b>SANS 6-step</b> — be ready for either.</p>
-      <h4 class="s">Imaging &amp; preservation</h4>
-      <p>Take a <b>bit-for-bit image</b> with a <b>write blocker</b>; work on the copy, never the original. Capture <b>volatile memory first</b> (order of volatility).</p>
-      <h4 class="s">Hashing &amp; chain of custody</h4>
-      <p><b>MD5/SHA-256</b> before and after — matching hash = unaltered. Log who/what/when (with time zone)/where for every handling step; store securely.</p>
-      <h4 class="s">Best practices</h4>
-      <p>Don't alter the original, photograph &amp; label, build a timeline. If a memory image is involved → <b>Volatility</b>: <code>imageinfo</code> → <code>pslist/pstree</code> → <code>psxview</code> → <code>netscan</code>.</p>
+      <p class="testing"><b>What's being tested:</b> can you run an incident end-to-end with a recognised <b>IR lifecycle</b>, AND handle digital evidence so it stays <b>court-admissible</b> — imaging, write blocker, order of volatility, hashing, chain of custody. This is the one that mirrors your group forensic assignment, so lean on what you did there.</p>
+
+      <span class="lbl">Concept 1 — pick a lifecycle, and know they're the same shape</span>
+      <p>Don't panic about 4 vs 6 vs 9. They're the same process at different resolutions — showing you know that is itself a mark:</p>
+      <div class="pair">
+        <div class="p a"><h5>NIST 4-phase (lecture default)</h5><p>Preparation → <b>Detection &amp; Analysis</b> → Containment, Eradication &amp; Recovery → Post-Incident Activity.</p></div>
+        <div class="p b"><h5>SANS 6-step (your assignment)</h5><p>Preparation → Identification → Containment → Eradication → Recovery → Lessons Learned.</p></div>
+      </div>
+      <p>SANS just splits NIST's middle phase into separate Containment / Eradication / Recovery steps and pulls "Identification" out of Detection. EC-Council's <b>9-step IH&amp;R</b> is the same idea broken down further (Prep → Recording → Triage → Notification → Containment → Evidence Gathering → Eradication → Recovery → Post-Incident). Use NIST 4 as your spine unless the question names one.</p>
+      <p><b>Why Detection &amp; Analysis is the hard phase:</b> you have to spot the incident from weak signals. Know the pair:</p>
+      <div class="pair">
+        <div class="p a"><h5>Precursor</h5><p>A sign an incident <b>may happen</b> — a vuln scanner showing up in your web logs, a new public exploit for software you run.</p></div>
+        <div class="p b"><h5>Indicator</h5><p>A sign one <b>is / has happened</b> — AV flags malware, IDS alerts on a successful DB attack, a file-integrity tool sees a changed system file.</p></div>
+      </div>
+
+      <span class="lbl">Concept 2 — evidence integrity (the highest-value cluster)</span>
+      <p>This trio is what makes evidence stand up in court — explain the <b>why</b> of each, not just the name:</p>
+      <ul>
+        <li><b>Bit-for-bit image + write blocker:</b> you take an exact forensic copy (which captures slack space and deleted data, not just visible files) and <b>always work on the copy</b>. The write blocker physically prevents any write to the original drive — a single write changes the disk and the defence can argue the evidence was altered.</li>
+        <li><b>Order of volatility:</b> capture the <b>most volatile data first</b> — RAM before you power off — because memory holds running processes, executed commands, <b>cleartext passwords</b>, live network connections and injected malware that all vanish at shutdown.</li>
+        <li><b>Hashing (MD5 / SHA-256):</b> hash the image <b>before and after</b> handling. If the two hashes match, you've mathematically proven the data wasn't changed — that's <b>integrity</b>. (It's one-way and not encryption.)</li>
+        <li><b>Chain of custody:</b> a documented log of <b>who handled what, when (with time zone), and where</b> for every handoff, plus secure tamper-evident storage. It removes any "someone could have tampered with it" defence.</li>
+      </ul>
+
+      <span class="lbl">How to structure a full-marks answer</span>
+      <ol class="ans-structure">
+        <li><b>State the lifecycle</b> you'll use (NIST 4; mention SANS 6 from your assignment) and the incident from the scenario.</li>
+        <li><b>Preparation</b> — the team, tools and policies that were ready beforehand.</li>
+        <li><b>Detection &amp; Analysis</b> — what tipped you off (precursor vs indicator), then triage: scope, severity, affected systems.</li>
+        <li><b>Containment</b> — isolate the host (pull from network); note the criteria for choosing a strategy (damage, evidence preservation, availability, time, effectiveness).</li>
+        <li><b>Evidence acquisition</b> — write blocker, bit-for-bit image, <b>capture RAM first</b> (order of volatility), hash before/after.</li>
+        <li><b>Chain of custody</b> — the log contents (IDs, MAC/IP, who/when/where, storage).</li>
+        <li><b>Eradication &amp; Recovery</b> — remove malware/root cause across <b>all</b> affected hosts, then restore from clean backups, patch, change passwords.</li>
+        <li><b>Post-incident / lessons learned</b> — what happened, how the team did, what to improve.</li>
+        <li><b>If a memory image is involved</b> — Volatility: <code>imageinfo</code> → <code>pslist/pstree</code> → <code>psxview</code> → <code>netscan</code>, and the IoC below.</li>
+      </ol>
+
+      <span class="lbl">Worked example — malware/ransomware on a workstation</span>
+      <p class="model"><b>Detect:</b> EDR + an IDS alert (indicators) flag suspicious outbound traffic. <b>Contain:</b> isolate the machine from the network immediately. <b>Acquire:</b> with a write blocker, capture <b>RAM first</b> then a disk image; <b>hash both</b> and log it. <b>Analyse:</b> in Volatility, <code>pstree</code> shows <code>lsass.exe</code> with the <b>wrong parent</b> — a fake process. <b>Eradicate:</b> remove the malware and close the entry vector on every affected host. <b>Recover:</b> rebuild from a clean backup, patch, rotate credentials. <b>Lessons learned:</b> document the timeline and tighten the gap that let it in. Throughout, the <b>chain-of-custody log</b> records every handoff.</p>
+
+      <div class="marks"><b>Mark-grabbers:</b> name a recognised model · the <b>write-blocker + hashing + chain-of-custody</b> trio is the single richest cluster of marks · capture RAM before disk · tie every step to the scenario.</div>
+      <div class="callbox"><h3>Common slips</h3><p>Confusing <b>precursor vs indicator</b> · forgetting to hash <b>both</b> before and after · saying you'd analyse the <b>original</b> (always the copy) · and picking the wrong phase count when the question explicitly names NIST or SANS.</p></div>
     </div>
   </details>
 
   <details class="essay">
     <summary><span class="enum">4</span><span class="etitle"><h3>Vulnerability assessment: risk &amp; remediation</h3><span class="meta">Module 05</span></span><span class="chev">›</span></summary>
     <div class="ebody">
-      <h4 class="s">(a) How you'd conduct the VA</h4>
-      <p>Define scope → pick tools (Nessus/OpenVAS/Qualys, or Metasploit + Nmap for the lab) → choose <b>authenticated vs unauthenticated</b> → scan → <b>validate</b> findings to cut false positives.</p>
-      <h4 class="s">(b) Identify the risk</h4>
-      <p>Classify and <b>prioritize by CVSS severity</b>. Example: legacy Win2000 SMB <b>MS08-067 (CVE-2008-4250)</b> = critical remote code execution → full takeover.</p>
-      <h4 class="s">(c) Remediation recommendations</h4>
-      <p>Patch/upgrade, disable SMBv1, <b>segment or decommission the EOL OS</b>, least privilege, firewall rules, then <b>rescan to verify</b>.</p>
+      <p class="testing"><b>What's being tested:</b> can you <b>run a VA properly</b> (scope → tool → credentialed-or-not → validate), <b>assess and prioritise</b> the risk you find (CVSS), and recommend <b>layered remediation</b> — then close the loop by rescanning. Usually 3 sub-parts: conduct / identify risk / remediate.</p>
+
+      <span class="lbl">Concept 1 — VA is not a pen test</span>
+      <p>A clean distinction that often scores: a <b>vulnerability assessment finds and ranks weaknesses</b> across many systems (breadth) and doesn't necessarily exploit them; a <b>penetration test proves exploitability</b> on a target (depth). The scenario will usually want the assessment-and-recommend angle.</p>
+
+      <span class="lbl">Concept 2 — credentialed vs non-credentialed, and why it changes the result</span>
+      <div class="pair">
+        <div class="p a"><h5>Credentialed (authenticated)</h5><p>The scanner logs in, so it sees <b>missing patches and config from the inside</b> — deeper and <b>more reliable</b>, fewer false positives. Cost: you have to manage credentials safely.</p></div>
+        <div class="p b"><h5>Non-credentialed</h5><p>No login — only sees what's <b>exposed to the network</b>. Faster and good for an attacker's-eye view, but <b>noisier</b>, more false positives, and misses internal/host-level issues.</p></div>
+      </div>
+      <p><b>Why validation matters:</b> automated scanners throw <b>false positives</b>. You confirm findings before reporting so the team doesn't burn effort patching something that isn't really there — that's the step that separates a real assessment from "I ran a tool".</p>
+      <p><b>Why prioritise by CVSS:</b> you can't fix everything at once, so you rank by <b>severity (CVSS score)</b> and business impact and fix the critical remote-code-execution holes before the low-risk info leaks.</p>
+
+      <span class="lbl">How to structure a full-marks answer</span>
+      <ol class="ans-structure">
+        <li><b>Scope &amp; assets.</b> Define what's in scope and baseline the systems (IPs, OS, services).</li>
+        <li><b>Pick the tool + scan type.</b> Nessus / OpenVAS / Qualys (or Metasploit + Nmap as in your lab); choose <b>credentialed vs non-credentialed</b> and <b>justify</b> it.</li>
+        <li><b>Run the scan</b> and collect findings.</li>
+        <li><b>Validate</b> the results to cut false positives.</li>
+        <li><b>Classify &amp; prioritise</b> by CVSS severity (+ business impact); name CVE/CWE where relevant.</li>
+        <li><b>Remediate — layered:</b> patch/upgrade, harden config, segment, least privilege, firewall rules. Not just "install the patch".</li>
+        <li><b>Rescan to verify</b>, then monitor continuously. This closes the VA lifecycle loop.</li>
+      </ol>
+
+      <span class="lbl">Worked example — legacy Windows 2000 box on the network</span>
+      <p class="model"><b>Scope/scan:</b> a credentialed scan with Nessus (or Nmap + Metasploit in the lab) flags the host. <b>Finding:</b> <b>MS08-067 (CVE-2008-4250)</b> — a <em>critical</em> remote-code-execution vulnerability in SMB. <b>Validate:</b> confirm it's genuinely exploitable, not a false positive. <b>Prioritise:</b> critical RCE → top of the list, since it gives full takeover. <b>Remediate:</b> ideally <b>decommission the end-of-life OS</b>; if it must stay, patch, <b>disable SMBv1</b>, <b>segment it off</b> the main network, apply least privilege and tight firewall rules. <b>Verify:</b> rescan to confirm it's closed.</p>
+
+      <div class="marks"><b>Mark-grabbers:</b> the VA-vs-pen-test line · the credentialed/non-credentialed trade-off · CVSS prioritisation · and the often-missed <b>rescan to verify</b> that closes the loop.</div>
+      <div class="callbox"><h3>Common slips</h3><p>Treating VA as a pen test · skipping the <b>validation</b> step and the final <b>rescan</b> · and recommending only "patch it" — for an <b>EOL system</b> you score more by adding <b>segmentation, least privilege and decommissioning</b>.</p></div>
     </div>
   </details>
 </section>
