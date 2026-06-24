@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-ver="2026-06-24a">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -268,6 +268,30 @@ footer{padding:34px 0 60px;color:var(--muted);font-size:13px;font-family:var(--m
 footer a{color:var(--intel-ink)}
 
 .divider{height:1px;background:repeating-linear-gradient(90deg,var(--line) 0 8px,transparent 8px 16px);margin:6px 0}
+/* ---------- highlighter ---------- */
+mark.hl{color:inherit;padding:.04em .08em;border-radius:3px;cursor:pointer;
+  box-decoration-break:clone;-webkit-box-decoration-break:clone;background:#FFE486}
+mark.hl.c2{background:#B7ECC4}
+mark.hl.c3{background:#FBC6DC}
+mark.hl.c4{background:#BBDDF7}
+@media (prefers-reduced-motion:no-preference){#hlbar{transition:opacity .12s}}
+#hlbar{position:fixed;z-index:200;display:none;gap:7px;align-items:center;padding:7px 8px;
+  background:#13171D;border-radius:12px;box-shadow:0 10px 26px -8px rgba(0,0,0,.45);opacity:0}
+#hlbar.show{display:flex;opacity:1}
+#hlbar button{width:26px;height:26px;border-radius:50%;border:2px solid rgba(255,255,255,.9);
+  cursor:pointer;padding:0;flex:none}
+#hlbar .s1{background:#FFE486}#hlbar .s2{background:#B7ECC4}#hlbar .s3{background:#FBC6DC}#hlbar .s4{background:#BBDDF7}
+#hlbar .er{background:transparent;border-color:rgba(255,255,255,.5);position:relative}
+#hlbar .er::before{content:"";position:absolute;inset:0;margin:auto;width:13px;height:2px;background:#fff;transform:rotate(45deg)}
+#hlclear{position:fixed;left:14px;bottom:14px;z-index:120;display:none;font-family:var(--mono);font-size:12px;
+  font-weight:600;border:1px solid var(--line);background:var(--paper);color:var(--ink-soft);
+  padding:8px 13px;border-radius:9px;cursor:pointer;box-shadow:var(--shadow)}
+#hlclear.show{display:block}
+#hlclear:hover{border-color:var(--target);color:var(--target-ink)}
+.hltip{font-family:var(--mono);font-size:12px;color:var(--muted);margin:14px 0 0;display:flex;align-items:center;gap:8px}
+.hltip b{color:var(--ink-soft);font-weight:600}
+.hltip .pen{width:14px;height:14px;border-radius:3px;background:#FFE486;flex:none}
+
 </style>
 </head>
 <body>
@@ -314,6 +338,7 @@ footer a{color:var(--intel-ink)}
     <span class="li"><span class="tag essay">ESSAY n</span> feeds a scenario essay</span>
   </div>
   <div class="focusnote">FOCUS MODE ON — Bonus Intel and the Crypto/Stego bonus zones are hidden. Toggle off to bring them back.</div>
+  <p class="hltip"><span class="pen"></span><b>Highlighter:</b>&nbsp;select any text and pick a colour to highlight it · tap a highlight to remove it · highlights save on this device.</p>
 </section>
 
 <!-- ================= ATTACK CHAIN ================= -->
@@ -410,10 +435,12 @@ footer a{color:var(--intel-ink)}
         <h3 class="t"><svg class="r"><use href="#ret"/></svg>Passive vs Active footprinting <span class="tag exam">EXAM ★</span> <span class="tag essay">ESSAY 1</span></h3>
         <p>Prep especially wants <b>passive recon</b>: gathering from public sources with <b>no contact</b> with the target.</p>
         <div class="pair">
-          <div class="p a"><h5>Passive</h5><p>No direct interaction → stealthy. OSINT, search engines, social media, job posts, Whois, DNS records, public repos (GitHub/Pastebin), document metadata.</p></div>
-          <div class="p b"><h5>Active</h5><p>Directly touches the target → detectable. Port/network scanning, service fingerprinting, email harvesting by probing, website/dir enumeration.</p></div>
+          <div class="p a"><h5>Passive</h5><p>No direct interaction → stealthy, no requests reach the target. OSINT, search engines, social media, job posts, Whois, DNS records, public repos (GitHub/Pastebin), document metadata.</p></div>
+          <div class="p b"><h5>Active</h5><p>Directly touches the target → <b>detectable, but returns more detail</b>. Port/network scanning, service fingerprinting, email harvesting, website/directory enumeration, traceroute, and DNS zone transfer (AXFR). Tool the slide names: <b>Nmap</b>.</p></div>
         </div>
         <p><b>Methodology order:</b> identify target → passive → active → network info → social engineering → website → DNS → compile &amp; report.</p>
+        <p><b>Two easy marks:</b> use <b>passive first</b> to avoid tripping the IDS/IPS, and <b>get authorisation before any active scanning</b> (the legal/ethical line).</p>
+        <div class="callbox"><h3>Essay tip — don't write the same thing twice</h3><p>Your Module 02 slide files port/network scanning under <b>active footprinting</b>, yet there's also a whole <b>Scanning</b> module (MOD 03) — they overlap on purpose. In <b>Essay 1</b> keep active recon at footprinting level (traceroute, zone transfer, email/website enumeration, an initial host probe); save the deep scan mechanics — SYN vs Connect, NULL/FIN/Xmas, IDS evasion — for <b>Essay 2</b>.</p></div>
       </div>
 
       <div class="block">
@@ -884,7 +911,7 @@ footer a{color:var(--intel-ink)}
       <p>Two models describe the same path at different levels of detail. The Certified Ethical Hacker five phases are <b>Reconnaissance → Scanning → Gaining Access → Maintaining Access → Clearing Tracks</b>. The Lockheed Martin Cyber Kill Chain breaks it into seven: <b>Reconnaissance → Weaponization → Delivery → Exploitation → Installation → Command and Control → Actions on Objectives</b>. Use whichever fits the question, but the marks come from showing how each stage hands something to the next:</p>
       <ul>
         <li><b>Reconnaissance</b> — gather information about the target. Passive reconnaissance comes first because it makes no contact with the target and so leaves no trace: Whois records, Domain Name System (DNS) records, certificate-transparency logs (crt.sh) for subdomains, Google search operators, email harvesting with theHarvester, employee details from LinkedIn and job adverts, and metadata inside published documents. Active reconnaissance then touches the target directly to fill in the gaps.</li>
-        <li><b>Scanning</b> — turn that information into a map of the live network. Host discovery (an Address Resolution Protocol or Internet Control Message Protocol ping sweep) answers which machines are switched on; a port and service scan with Nmap then shows which services are listening and which versions they are running.</li>
+        <li><b>Scanning</b> — turn that information into a map of the live network. Host discovery (an Address Resolution Protocol or Internet Control Message Protocol ping sweep) answers which machines are switched on; a port and service scan with Nmap then shows which services are listening and which versions they are running. Keep this at summary level here — the stealth scans, flag types and IDS evasion belong to Essay 2, so naming the step is enough.</li>
         <li><b>Enumeration</b> — make active connections to the open services and pull out specifics: usernames, machine names, shared folders, and software versions. This is the stage that converts a bare fact like "port 445 is open" into something usable such as "Server Message Block version 1, Windows 2000, share named ACCOUNTS".</li>
         <li><b>Gaining access</b> — take those exact version details, match them to a known vulnerability (a Common Vulnerabilities and Exposures, or CVE, identifier), and run the matching exploit. Without the version from enumeration you would only be guessing, which is why the earlier stages matter.</li>
         <li><b>Maintaining access</b> — a single session is lost the moment the machine reboots, so the attacker raises their privilege level (privilege escalation) and installs something that survives a restart: a backdoor, a rootkit, or a scheduled task.</li>
@@ -1071,6 +1098,15 @@ footer a{color:var(--intel-ink)}
 </footer>
 </main>
 
+<div id="hlbar" role="toolbar" aria-label="Highlight colour">
+  <button class="s1" data-c="" aria-label="Yellow"></button>
+  <button class="s2" data-c="c2" aria-label="Green"></button>
+  <button class="s3" data-c="c3" aria-label="Pink"></button>
+  <button class="s4" data-c="c4" aria-label="Blue"></button>
+  <button class="er" data-c="erase" aria-label="Remove highlight"></button>
+</div>
+<button id="hlclear">Clear highlights</button>
+
 <script>
 (function(){
   var btn=document.getElementById('scope');
@@ -1090,6 +1126,121 @@ footer a{color:var(--intel-ink)}
   menuBtn.addEventListener('click',function(){ setMenu(!top.classList.contains('open')); });
   // tapping a section link closes the menu
   nav.addEventListener('click',function(e){ if(e.target.closest('a')){ setMenu(false); } });
+
+  /* ---------- highlighter ---------- */
+  var notes=document.querySelector('main > .wrap');
+  var bar=document.getElementById('hlbar');
+  var clearBtn=document.getElementById('hlclear');
+  var VER=document.documentElement.getAttribute('data-ver')||'v1';
+  var KEY='ehir-highlights';
+  var savedRange=null;     // last valid selection inside the notes
+  var barDown=false;       // true while the toolbar is being pressed
+
+  function store(){ try{ localStorage.setItem(KEY,JSON.stringify({v:VER,html:notes.innerHTML})); }catch(e){} }
+  function restore(){
+    try{
+      var raw=localStorage.getItem(KEY); if(!raw) return;
+      var o=JSON.parse(raw);
+      if(o&&o.v===VER&&typeof o.html==='string'&&o.html.indexOf('id="essays"')>-1){ notes.innerHTML=o.html; }
+    }catch(e){}
+  }
+  function refreshClear(){ clearBtn.classList.toggle('show', !!notes.querySelector('mark.hl')); }
+
+  function closestMark(node){
+    while(node&&node!==notes){
+      if(node.nodeType===1&&node.classList&&node.classList.contains('hl')) return node;
+      node=node.parentNode;
+    }
+    return null;
+  }
+  function unwrap(m){ var p=m.parentNode; if(!p) return; while(m.firstChild) p.insertBefore(m.firstChild,m); p.removeChild(m); p.normalize(); }
+  function tidy(){
+    // flatten any highlight nested inside another, then drop empties, then merge text
+    notes.querySelectorAll('mark.hl mark.hl').forEach(function(inner){
+      var p=inner.parentNode; while(inner.firstChild) p.insertBefore(inner.firstChild,inner); p.removeChild(inner);
+    });
+    notes.querySelectorAll('mark.hl').forEach(function(m){ if(!m.textContent.trim()) unwrap(m); });
+    notes.normalize();
+  }
+  function cls(c){ return 'hl'+(c?(' '+c):''); }
+
+  function captureSelection(){
+    var sel=window.getSelection();
+    if(sel&&sel.rangeCount&&!sel.isCollapsed){
+      var r=sel.getRangeAt(0);
+      if(notes.contains(r.commonAncestorContainer)){ savedRange=r.cloneRange(); return true; }
+    }
+    return false;
+  }
+
+  function applyHighlight(c){
+    var range=savedRange; if(!range||!notes.contains(range.commonAncestorContainer)) { hideBar(); return; }
+    var startM=closestMark(range.startContainer), endM=closestMark(range.endContainer);
+
+    if(c==='erase'){
+      notes.querySelectorAll('mark.hl').forEach(function(m){
+        try{ if(range.intersectsNode&&range.intersectsNode(m)) unwrap(m); }catch(e){}
+      });
+      return finish();
+    }
+    // selection entirely within one existing highlight -> just recolour it
+    if(startM&&startM===endM){ startM.className=cls(c); return finish(); }
+
+    var m=document.createElement('mark'); m.className=cls(c);
+    try{ range.surroundContents(m); }
+    catch(e){ try{ var frag=range.extractContents(); m.appendChild(frag); range.insertNode(m); }catch(_){ return finish(); } }
+    finish();
+  }
+  function finish(){ tidy(); savedRange=null; var s=window.getSelection(); if(s) s.removeAllRanges(); hideBar(); store(); refreshClear(); }
+
+  function positionBar(){
+    if(barDown) return;                     // don't move/hide while the toolbar is being tapped
+    var sel=window.getSelection();
+    if(!sel||!sel.rangeCount||sel.isCollapsed||!notes.contains(sel.getRangeAt(0).commonAncestorContainer)){ hideBar(); return; }
+    captureSelection();
+    var r=sel.getRangeAt(0).getBoundingClientRect();
+    if(!r||(r.width===0&&r.height===0)){ hideBar(); return; }
+    bar.classList.add('show');
+    var bw=bar.offsetWidth, bh=bar.offsetHeight, vw=document.documentElement.clientWidth;
+    var left=Math.max(8,Math.min(r.left+r.width/2-bw/2, vw-bw-8));
+    var topPx=r.top-bh-10; if(topPx<8) topPx=r.bottom+10;
+    bar.style.left=left+'px'; bar.style.top=topPx+'px';
+  }
+  function hideBar(){ bar.classList.remove('show'); }
+
+  document.addEventListener('selectionchange',function(){
+    clearTimeout(window.__hlT); window.__hlT=setTimeout(positionBar,60);
+  });
+  window.addEventListener('scroll',function(){ if(bar.classList.contains('show')) positionBar(); },{passive:true});
+  window.addEventListener('resize',positionBar);
+
+  // hold the toolbar while it's being pressed; on touch the text selection can
+  // collapse mid-tap, so cancel any pending hide and only release shortly after
+  function barHold(e){ barDown=true; clearTimeout(window.__hlT); if(e&&e.cancelable) e.preventDefault(); }
+  bar.addEventListener('mousedown',barHold);
+  bar.addEventListener('touchstart',barHold,{passive:false});
+  function barRelease(){ setTimeout(function(){ barDown=false; },400); }
+  document.addEventListener('mouseup',barRelease);
+  document.addEventListener('touchend',barRelease);
+  document.addEventListener('touchcancel',barRelease);
+
+  function onPick(e){
+    var b=e.target.closest('button');
+    if(b){ applyHighlight(b.getAttribute('data-c')); }
+    barDown=false;
+  }
+  bar.addEventListener('click',onPick);
+
+  // tap an existing highlight (no selection) to remove it
+  notes.addEventListener('click',function(e){
+    var m=e.target.closest('mark.hl'); if(!m) return;
+    var s=window.getSelection();
+    if(s&&s.isCollapsed){ unwrap(m); store(); refreshClear(); }
+  });
+  clearBtn.addEventListener('click',function(){ notes.querySelectorAll('mark.hl').forEach(unwrap); store(); refreshClear(); });
+
+  restore();
+  refreshClear();
 })();
 </script>
 </body>
