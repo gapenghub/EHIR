@@ -50,6 +50,46 @@ header.top{
 .scopebtn:hover{border-color:var(--target);color:var(--target-ink)}
 body.focus .scopebtn{background:var(--target);border-color:var(--target);color:#fff}
 
+/* hamburger (mobile only) */
+.menu-btn{display:none;width:40px;height:34px;flex:none;border:1px solid var(--line);border-radius:8px;
+  background:var(--paper);flex-direction:column;justify-content:center;align-items:center;gap:4px;cursor:pointer;padding:0}
+.menu-btn span{width:18px;height:2px;background:var(--ink-soft);border-radius:2px;transition:transform .2s,opacity .2s}
+.top.open .menu-btn span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.top.open .menu-btn span:nth-child(2){opacity:0}
+.top.open .menu-btn span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+
+/* ---------- mobile layout ---------- */
+@media (max-width:760px){
+  .top .wrap{gap:9px}
+  .brand{font-size:13px;min-width:0;overflow:hidden}
+  .brand small{display:none}
+  .menu-btn{display:flex;margin-left:auto}
+  .scopebtn{flex:none;font-size:11px;padding:7px 10px}
+  /* nav becomes a drop-down chip panel */
+  .top nav{position:absolute;top:100%;left:0;right:0;margin:0;display:none;flex-direction:row;flex-wrap:wrap;
+    gap:7px;padding:13px 16px 16px;background:var(--paper);border-bottom:1px solid var(--line);
+    box-shadow:0 12px 22px -12px rgba(20,24,30,.35);max-height:72vh;overflow:auto}
+  .top.open nav{display:flex}
+  .top nav a{font-size:13px;padding:9px 13px;border:1px solid var(--line);border-radius:9px;background:var(--bg)}
+  .top nav a:active{background:var(--line-soft)}
+}
+@media (max-width:560px){
+  .wrap{padding:0 15px}
+  .struct{grid-template-columns:1fr}
+  .hero{padding:38px 0 24px}
+  .legend{gap:9px 14px;padding:14px 15px}
+  details.essay summary{padding:16px 15px;gap:11px}
+  .ebody{padding:0 15px 18px}
+  .essaybar{padding:18px 17px}
+  table{font-size:12.5px;min-width:430px}
+  th,td{padding:7px 9px}
+  .ans-structure li{padding:9px 12px 9px 40px}
+}
+/* touch-scroll for anything that scrolls sideways */
+.tablewrap,.cmd{-webkit-overflow-scrolling:touch}
+img,svg{max-width:100%}
+body{overflow-x:hidden}
+
 /* ---------- reticle ---------- */
 .reticle{display:inline-block;vertical-align:middle}
 .reticle circle,.reticle line{stroke:var(--target);stroke-width:2;fill:none}
@@ -237,7 +277,8 @@ footer a{color:var(--intel-ink)}
 <header class="top">
   <div class="wrap">
     <a class="brand" href="#top"><svg class="reticle" viewBox="0 0 24 24"><use href="#ret"/></svg>EHIR DOSSIER <small>· CT080-3-2</small></a>
-    <nav>
+    <button class="menu-btn" id="menuBtn" aria-label="Section menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    <nav id="nav">
       <a href="#chain">Lifecycle</a>
       <a href="#m01">01</a><a href="#m02">02</a><a href="#m03">03</a>
       <a href="#ref">Ports</a>
@@ -1069,6 +1110,17 @@ footer a{color:var(--intel-ink)}
     btn.textContent=on?'Show everything':'Exam targets only';
     if(on){window.scrollTo({top:0,behavior:'smooth'});}
   });
+
+  var menuBtn=document.getElementById('menuBtn');
+  var top=document.querySelector('header.top');
+  var nav=document.getElementById('nav');
+  function setMenu(open){
+    top.classList.toggle('open',open);
+    menuBtn.setAttribute('aria-expanded',open?'true':'false');
+  }
+  menuBtn.addEventListener('click',function(){ setMenu(!top.classList.contains('open')); });
+  // tapping a section link closes the menu
+  nav.addEventListener('click',function(e){ if(e.target.closest('a')){ setMenu(false); } });
 })();
 </script>
 </body>
